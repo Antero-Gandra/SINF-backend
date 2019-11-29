@@ -7,6 +7,7 @@ const morgan = require('morgan');
 const express = require('express');
 
 var ordersRouter = require('./routes/orders');
+var tokenRouter = require('./routes/token');
 
 var app = express();
 
@@ -23,7 +24,8 @@ app.use(cors());
 app.use(helmet());
 
 // * routers
-app.use('/', ordersRouter);
+app.use('/orders', ordersRouter);
+app.use('/token', tokenRouter);
 // ...
 
 // * catch 404 and forward to error handler

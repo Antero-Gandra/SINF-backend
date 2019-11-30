@@ -8,6 +8,7 @@ const express = require('express');
 
 var ordersRouter = require('./routes/orders');
 var tokenRouter = require('./routes/token');
+var invoiceRouter = require('./routes/invoice');
 
 var app = express();
 
@@ -26,6 +27,8 @@ app.use(helmet());
 // * routers
 app.use('/orders', ordersRouter);
 app.use('/token', tokenRouter);
+app.use('/invoices', invoiceRouter);
+
 // ...
 
 // * catch 404 and forward to error handler

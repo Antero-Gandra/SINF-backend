@@ -6,12 +6,12 @@ const formdata = require('form-data');
 var url = "https://my.jasminsoftware.com";
 var tenant = "224977";
 var organization = "224977-0001";
-var token = 'Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjBCMjI3OTVEMzcyMzQ2NDIwOUE2MDIxQUQ4OUE1OTdFRjE0OTZEODAiLCJ0eXAiOiJKV1QiLCJ4NXQiOiJDeUo1WFRjalJrSUpwZ0lhMkpwWmZ2RkpiWUEifQ.eyJuYmYiOjE1NzUwMTMzODUsImV4cCI6MTU3NTAyNzc4NSwiaXNzIjoiaHR0cHM6Ly9pZGVudGl0eS5wcmltYXZlcmFic3MuY29tIiwiYXVkIjpbImh0dHBzOi8vaWRlbnRpdHkucHJpbWF2ZXJhYnNzLmNvbS9yZXNvdXJjZXMiLCJqYXNtaW4iXSwiY2xpZW50X2lkIjoiVEVDSFNJTkYiLCJzY29wZSI6WyJhcHBsaWNhdGlvbiJdfQ.kFzbCxQjUoabvzX8p2OVWXyse4fqtS6Q8SXg3TGpQX7_XjZWO0j-XjdEHphu5W9F21aZxRL1omh6lph_5S2_0zLQ7qZdzQ-t52Ckgty-6kbyDwXL2AFomawUyQXga0z4CgIXHHFYpvICjjK0DaKksYJedVnDgmoGyKQ7IWofxkMd8PBsE6J-yQh0T3Rtfdw7cUvmG-p3vPSrR032xrVymwyo1Obhvu7yh8GTSL1BS_n5kNv9-NPVXkKEyBq6aLt9qxucQGoMPZ6Bcg147sCUAvQLRbqAEY6yciTi7g5d4aBu2-UPBYganvZHG6jO0wh1g8wHWUpRRFU8ZlN-UzHCxw';
+var token = 'Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjBCMjI3OTVEMzcyMzQ2NDIwOUE2MDIxQUQ4OUE1OTdFRjE0OTZEODAiLCJ0eXAiOiJKV1QiLCJ4NXQiOiJDeUo1WFRjalJrSUpwZ0lhMkpwWmZ2RkpiWUEifQ.eyJuYmYiOjE1NzUxMTQyMzYsImV4cCI6MTU3NTEyODYzNiwiaXNzIjoiaHR0cHM6Ly9pZGVudGl0eS5wcmltYXZlcmFic3MuY29tIiwiYXVkIjpbImh0dHBzOi8vaWRlbnRpdHkucHJpbWF2ZXJhYnNzLmNvbS9yZXNvdXJjZXMiLCJqYXNtaW4iXSwiY2xpZW50X2lkIjoiVEVDSFNJTkYiLCJzY29wZSI6WyJhcHBsaWNhdGlvbiJdfQ.nSkiIy-AtghGJsVFItO9NTIZezGU8i-VyU0SkeWFK40SPl0WMK1fZgVzy_73wBMRe3te89-uuBS5tHbXwiw2JNKsX9xpXZwjPDUf9ywPWd4Nw_cLjQl3jWEZAzIm6gYncLwlvHDJrD_PSZ1k5PENZpCUyvEQjtI-NLs1uvHx26p1KQ-PAD9uaYZOJHdfh4VMNVYx2Ka30xOdbZv2mYMhavwpdeU7kDSKqH34xZ55fs0hlrIw2b8-MtyuGCYVMrj4OkSCHuI7fF_CPNrpJ1LS3-k24RqErwnWtiW_62vlSC759C3ek_RJg9C-oBs4nAnw6SKTMJMlNfbTG3mEA65nHw';
 
-router.get('/sales', function (req, res, next) {
+router.get('/purchases', function (req, res, next) {
   let requestData = new formdata();
 
-  createRequest('get', url + '/api/' + tenant + '/' + organization + '/sales/orders',requestData, true)
+  createRequest('get', `${url}/api/${tenant}/${organization}/purchases/orders`,requestData, true)
     .then((res) => {
         console.log(res.data);
     }).catch((err) => {

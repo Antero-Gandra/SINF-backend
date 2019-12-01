@@ -19,4 +19,33 @@ router.get('/sales', function (req, res, next) {
   });
 });
 
+router.get('/purchases', function (req, res, next) {
+  let requestData = new formdata();
+
+  let documentType = "VFA";
+  let company = "EMPY";
+  let seller = "0001";
+  let documentLines = [
+    {
+      "PurchasesItem": "FORTNITE",
+      "quantity": 1
+    }
+    ]
+
+    requestData = 
+    {
+      "documentType": documentType,
+      "company": company,
+      "sellerSupplierParty": seller,
+      "documentLines": documentLines
+    }
+
+  utils.createRequest('post',`${url}/api/${tenant}/${organization}/invoiceReceipt/invoices/`,requestData, true)
+    .then((res) => {
+        console.log(res.data);
+    }).catch((err) => {
+        console.log(err);
+  });
+});
+
 module.exports = router;

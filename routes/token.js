@@ -7,7 +7,7 @@ router.get('/', function (req, res, next) {
   let requestData = new formdata();
 
   requestData.append("client_id", "TECHSINF");
-  requestData.append("client_secret", "4f8c8e8d-8106-40e5-a6c4-ea728dabf541");
+  requestData.append("client_secret", "bf09564a-e496-42f1-8a32-00d6a0f8922e");
   requestData.append("grant_type", "client_credentials");
   requestData.append("scope", "application");
   

@@ -14,7 +14,7 @@ const router = express.Router();
 router.get("/get/*", function(req, res, next) {
   const url = req.params[0];
   api
-    .get(`/${tenant}/${organization}/${url}`)
+    .get(`/${tenant}/${organization}/${url}`, { params: req.query })
     .then(response => res.send(response.data))
     .catch(error => res.send(error));
 });

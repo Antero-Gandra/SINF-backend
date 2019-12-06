@@ -9,8 +9,11 @@ const organization = process.env.A_ORGANIZATION;
 const router = express.Router();
 
 router.get("/get/*", function(req, res, next) {
-  console.log(req.params[0]);
-  res.end();
+  const url = req.params[0];
+  api
+    .get(`/${tenant}/${organization}/${url}`)
+    .then(response => res.send(response.data))
+    .catch(error => res.send(error));
 });
 
 router.get("/token", function(req, res, next) {

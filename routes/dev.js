@@ -8,6 +8,9 @@ const organization = process.env.A_ORGANIZATION;
 
 const router = express.Router();
 
+/**
+ * Primavera GET /*
+ */
 router.get("/get/*", function(req, res, next) {
   const url = req.params[0];
   api
@@ -16,12 +19,18 @@ router.get("/get/*", function(req, res, next) {
     .catch(error => res.send(error));
 });
 
+/**
+ * Auth POST /connect/token
+ */
 router.get("/token", function(req, res, next) {
   requestToken()
     .then(response => res.send(response.data))
     .catch(error => res.send(error));
 });
 
+/**
+ * Primavera POST /sales/orders
+ */
 router.get("/post/sales/orders", function(req, res, next) {
   api
     .post(`/${tenant}/${organization}/sales/orders`, {
@@ -34,6 +43,9 @@ router.get("/post/sales/orders", function(req, res, next) {
     .catch(error => res.send(error));
 });
 
+/**
+ * Primavera POST /invoiceReceipt/invoices
+ */
 router.get("/post/invoiceReceipt/invoices", function(req, res, next) {
   const documentType = "VFA";
   const company = "EMPY";

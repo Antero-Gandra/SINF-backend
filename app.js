@@ -11,6 +11,7 @@ const express = require("express");
 
 // router imports
 const devRouter = require("./routes/dev");
+const productsRouter = require("./routes/product");
 
 // setup endpoints and fetch access_token
 require("./utils/token");
@@ -33,6 +34,8 @@ app.use(cors());
 app.use(helmet());
 
 // routers
+app.use("/product", productsRouter);
+
 if (env == "dev") {
   app.use("/dev", devRouter);
 }

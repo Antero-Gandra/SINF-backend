@@ -17,8 +17,9 @@ const auth = axios.create({
 const api = axios.create({
   baseURL: PRIMAVERA_API_BASE_URL,
   headers: {
-    "content-type": "application/json"
-  }
+    "Content-Type": "application/json"
+  },
+  timeout: 30000
 });
 
 module.exports = { auth, api };

@@ -10,8 +10,6 @@ const morgan = require("morgan");
 const express = require("express");
 
 // router imports
-const ordersRouter = require("./routes/orders");
-const invoiceRouter = require("./routes/invoice");
 const devRouter = require("./routes/dev");
 
 // setup endpoints and fetch access_token
@@ -35,9 +33,6 @@ app.use(cors());
 app.use(helmet());
 
 // routers
-app.use("/orders", ordersRouter);
-app.use("/invoices", invoiceRouter);
-
 if (env == "dev") {
   app.use("/dev", devRouter);
 }

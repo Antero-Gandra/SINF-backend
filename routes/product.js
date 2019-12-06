@@ -23,7 +23,7 @@ router.get("/all", function(req, res, next) {
   api
     .get(`/${tenant}/${organization}/salesCore/salesItems/extension`)
     .then(response => {
-      res.send(response);
+      res.send(response.data);
     })
     .catch(error => {
       console.log(error);

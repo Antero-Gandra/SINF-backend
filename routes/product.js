@@ -1,34 +1,33 @@
-const utils = require('../utils/utils');
+const { api } = require("../utils/endpoints");
 
 const express = require("express");
 const router = express.Router();
-const formdata = require('form-data');
 
-let url = utils.url;
-let tenant = utils.tenant;
-let organization = utils.organization;
+const tenant = process.env.A_TENANT;
+const organization = process.env.A_ORGANIZATION;
 
-router.get('/pId/:id', function (req, res, next) {
-  let requestData = new formdata();
+router.get("/pId/:id", function(req, res, next) {
   let productId = req.params.id;
 
-  utils.createRequest('get', `${url}/api/${tenant}/${organization}/salescore/salesitems/${productId}`,requestData, true)
-    .then((res) => {
-        console.log(res.data);
-    }).catch((err) => {
-        console.log(err);
-  });
+  api
+    .get(`/${tenant}/${organization}/salescore/salesitems/${productId}`)
+    .then(response => {
+      res.send(response.data);
+    })
+    .catch(error => {
+      console.log(error);
+    });
 });
 
-router.get('/all', function (req, res, next) {
-    let requestData = new formdata();
-  
-    utils.createRequest('get', `${url}/api/${tenant}/${organization}/salesCore/salesItems/extension`, requestData, true)
-      .then((res) => {
-          console.log(res.data);
-      }).catch((err) => {
-          console.log(err);
+router.get("/all", function(req, res, next) {
+  api
+    .get(`/${tenant}/${organization}/salesCore/salesItems/extension`)
+    .then(response => {
+      res.send(response);
+    })
+    .catch(error => {
+      console.log(error);
     });
-  });
+});
 
 module.exports = router;

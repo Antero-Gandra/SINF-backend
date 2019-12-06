@@ -9,6 +9,7 @@ const express = require('express');
 var ordersRouter = require('./routes/orders');
 var tokenRouter = require('./routes/token');
 var invoiceRouter = require('./routes/invoice');
+var productsRouter = require('./routes/product')
 
 var app = express();
 
@@ -28,6 +29,7 @@ app.use(helmet());
 app.use('/orders', ordersRouter);
 app.use('/token', tokenRouter);
 app.use('/invoices', invoiceRouter);
+app.use('/product', productsRouter);
 
 // ...
 

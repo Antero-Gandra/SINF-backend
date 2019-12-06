@@ -21,10 +21,8 @@ const env = process.env.NODE_ENV || "dev";
 const app = express();
 
 // setup html template engine + console logging for development
-if (env == "dev") {
-  app.set("view engine", "pug");
-  app.use(morgan("dev"));
-}
+app.set("view engine", "pug");
+app.use(morgan("dev"));
 
 // builtin middleware
 app.use(express.json());
@@ -35,11 +33,9 @@ app.use(cors());
 app.use(helmet());
 
 // routers
-app.use("/product", productsRouter);
 
-if (env == "dev") {
-  app.use("/dev", devRouter);
-}
+app.use("/product", productsRouter);
+app.use("/dev", devRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

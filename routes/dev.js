@@ -1,5 +1,6 @@
 const express = require("express");
 const { api } = require("../utils/endpoints");
+const { pool } = require("../database/connection");
 const { requestToken } = require("../utils/token");
 
 // test on A
@@ -17,6 +18,18 @@ router.get("/get/*", function(req, res, next) {
     .get(`/${tenant}/${organization}/${url}`, { params: req.query })
     .then(response => res.send(response.data))
     .catch(error => res.send(error));
+});
+
+/**
+ * Database SELECT
+ */
+router.get("/db/test", function(req, res, next) {
+  const url = req.params[0];
+  pool.query("SELECT * FROM test", (err, results) => {
+    if (err) throw err;
+    const { rows, rowCount } = results;
+    res.status(200).json({ rows, rowCount });
+  });
 });
 
 /**

@@ -2,7 +2,7 @@ const express = require("express");
 const { api } = require("../utils/endpoints");
 const { pool } = require("../database/connection");
 const { requestToken } = require("../utils/token");
-const { validatorRouteMap, validateArray } = require("../models/validator");
+const { routeMap, validate } = require("../models/validator");
 
 // test on A
 const tenant = process.env.A_TENANT;
@@ -23,7 +23,7 @@ router.get("/get/*", function(req, res, next) {
 
 router.get("/joi/*", function(req, res, next) {
   const url = req.params[0];
-  const validator = validatorRouteMap["/" + url];
+  const validator = routeMap["/" + url];
   if (!validator) {
     return res.send("Invalid URL: " + url);
   }
@@ -31,7 +31,7 @@ router.get("/joi/*", function(req, res, next) {
     .get(`/${tenant}/${organization}/${url}`, {
       params: req.query
     })
-    .then(response => validateArray(validator, response, res, next))
+    .then(response => validate(validator, response, res, next))
     .catch(next);
 });
 

@@ -1,6 +1,10 @@
 const Joi = require("@hapi/joi");
 const { } = require("./Core");
 
+/**
+ * Validator for required fields of resource PartyTaxSchemaResource
+ * GET /taxesCore/partyTaxSchemas
+ */
 const PartyTaxSchema = Joi.strict({
   id: Joi.string().uuid(),
   taxCodeGroupKey: Joi.string(), // PRIMARY KEY PartyTaxSchema

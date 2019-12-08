@@ -11,7 +11,7 @@ const organization = process.env.A_ORGANIZATION;
 const router = express.Router();
 
 /**
- * Primavera GET /*
+ * Send a GET request to any Primavera endpoint with any query parameters.
  */
 router.get("/get/*", function(req, res, next) {
   const url = req.params[0];
@@ -21,6 +21,10 @@ router.get("/get/*", function(req, res, next) {
     .catch(error => res.send(error));
 });
 
+/**
+ * Send a GET request to any Primavera endpoints with any query parameters.
+ * Validate the results against the Joi models.
+ */
 router.get("/joi/*", function(req, res, next) {
   const url = req.params[0];
   const validator = routeMap["/" + url];
@@ -31,7 +35,32 @@ router.get("/joi/*", function(req, res, next) {
     .get(`/${tenant}/${organization}/${url}`, {
       params: req.query
     })
-    .then(response => validate(validator, response, res, next))
+    .then(response => validateSend(validator, response, res, next))
+    .catch(next);
+});
+
+/**
+ * Validate all endpoints against the Joi models.
+ */
+router.get("/check", function(req, res, next) {
+  const promises = Object.keys(routeMap).map(url =>
+    api
+      .get(`/${tenant}/${organization}${url}`, {
+        params: { $inlinecount: "allpages", ...req.query }
+      })
+      .then(response => ({
+        url,
+        ...validate(routeMap[url], response)
+      }))
+      .catch(err => console.log(err))
+  );
+  Promise.all(promises)
+    .then(all =>
+      res.send({
+        ALL_OK: all.every(item => item.ok),
+        all
+      })
+    )
     .catch(next);
 });
 

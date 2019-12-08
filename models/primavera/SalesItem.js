@@ -1,6 +1,7 @@
 const Joi = require("@hapi/joi");
 const { } = require("./Core");
 const SalesPriceListLine = require("./SalesPriceListLine");
+const Item = require("./Item");
 
 /**
  * Validator for required fields of SalesItemResource
@@ -29,5 +30,7 @@ const SalesItem = Joi.strict({
 
   priceListLines: Joi.array().items(SalesPriceListLine).optional().allow(null),
 });
+
+SalesItem.extended = Item.concat(SalesItem);
 
 module.exports = SalesItem;

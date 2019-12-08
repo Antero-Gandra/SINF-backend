@@ -23,11 +23,13 @@ module.exports = {
   PurchaseItem: require("./PurchaseItem"),
   PurchaseOrder: require("./PurchaseOrder"),
   PurchaseOrderLine: require("./PurchaseOrderLine"),
+  SupplierParty: require("./SupplierParty"),
 
   // * /sales & /salesCore
   SalesInvoice: require("./SalesInvoice"),
   SalesInvoiceLine: require("./SalesInvoiceLine"),
   SalesItem: require("./SalesItem"),
   SalesOrder: require("./SalesOrder"),
-  SalesOrderLine: require("./SalesOrderLine")
+  SalesOrderLine: require("./SalesOrderLine"),
+  CustomerParty: require("./CustomerParty"),
 };

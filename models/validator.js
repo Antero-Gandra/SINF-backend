@@ -10,24 +10,12 @@ const {
   PurchaseInvoice,
   PurchaseItem,
   PurchaseOrder,
+  SupplierParty,
   SalesInvoice,
   SalesItem,
-  SalesOrder
+  SalesOrder,
+  CustomerParty
 } = require("./primavera/All");
-
-function validate(schema, response, res, next) {
-  const data = response.data;
-  const items = "items" in data ? data.items : data;
-  const errors = {};
-  let checked = 0;
-  for (key in items) {
-    const { error } = schema.validate(items[key]);
-    if (error) errors[key] = error;
-    ++checked;
-  }
-  const ok = Object.keys(errors).length === 0;
-  return res.send({ ok, checked, ...data, errors });
-}
 
 const routeMap = {
   "/corePatterns/countries/odata": Country,
@@ -40,13 +28,42 @@ const routeMap = {
   "/financialCore/paymentTerms": PaymentTerm,
   "/invoiceReceipt/invoices/odata": PurchaseInvoice,
   "/purchasesCore/purchasesItems/extension/odata": PurchaseItem,
+  "/purchasesCore/purchasesItems/odata": PurchaseItem.extended,
   "/purchases/orders/odata": PurchaseOrder,
+  "/purchasesCore/supplierParties/extension/odata": SupplierParty,
+  "/purchasesCore/supplierParties/odata": SupplierParty.extended,
   "/billing/invoices/odata": SalesInvoice,
   "/salesCore/salesItems/extension/odata": SalesItem,
-  "/sales/orders/odata": SalesOrder
+  "/salesCore/salesItems/odata": SalesItem.extended,
+  "/sales/orders/odata": SalesOrder,
+  "/salesCore/customerParties/extension/odata": CustomerParty,
+  "/salesCore/customerParties/odata": CustomerParty.extended
 };
+
+function validate(schema, response) {
+  const data = response.data;
+  const items = "items" in data ? data.items : data;
+  const errors = [];
+  const num = { good: 0, bad: 0 };
+  for (key in items) {
+    const { error } = schema.validate(items[key]);
+    if (error) {
+      errors.push(error.details[0]);
+      ++num.bad;
+    } else {
+      ++num.good;
+    }
+  }
+  return { ok: num.bad === 0, num, errors };
+}
+
+function validateSend(schema, response, res) {
+  const { ok, num, errors } = validate(null, schema, response);
+  return res.send({ ok, num, errors, ...data });
+}
 
 module.exports = {
   validate,
+  validateSend,
   routeMap
 };

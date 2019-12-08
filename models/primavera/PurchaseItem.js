@@ -3,6 +3,7 @@ const {
   Amount,
   AmountObject
 } = require("./Core");
+const Item = require("./Item");
 
 /**
  * Validator for required fields of PurchasesItemResource
@@ -31,5 +32,7 @@ const PurchaseItem = Joi.strict({
 
   // priceListLines: Joi.array()...
 });
+
+PurchaseItem.extended = Item.concat(PurchaseItem);
 
 module.exports = PurchaseItem;

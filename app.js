@@ -37,6 +37,10 @@ app.use(helmet());
 app.use("/product", productsRouter);
 app.use("/dev", devRouter);
 
+app.use(function(err, req, res, next) {
+  res.send(err);
+});
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

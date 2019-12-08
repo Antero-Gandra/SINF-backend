@@ -1,5 +1,5 @@
 const Joi = require("@hapi/joi");
-const { } = require("./Core");
+const { } = require("./common");
 
 // Cash, Check, PayPal, Other, BankTransfer, DirectDebit
 const PaymentMethodType = Joi.number().integer().valid(1, 2, 5, 4, 6, 7);

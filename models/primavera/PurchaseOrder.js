@@ -5,7 +5,7 @@ const {
   DocumentStatus,
   OrderNature,
   SeriesNumber
-} = require("./Core");
+} = require("./common");
 const PurchaseOrderLine = require("./PurchaseOrderLine");
 
 /**

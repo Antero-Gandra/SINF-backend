@@ -1,8 +1,8 @@
 const express = require("express");
 const { api } = require("../utils/endpoints");
-const { pool } = require("../database/connection");
+const pool = require("../database");
 const { requestToken } = require("../utils/token");
-const { routeMap, validate } = require("../models/validator");
+const { routeMap, validate } = require("../models");
 
 // test on A
 const tenant = process.env.A_TENANT;

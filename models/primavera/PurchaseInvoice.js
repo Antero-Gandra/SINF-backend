@@ -5,7 +5,7 @@ const {
   Decimal,
   DocumentStatus,
   SeriesNumber
-} = require("./Core");
+} = require("./common");
 const PurchaseInvoiceLine = require("./PurchaseInvoiceLine");
 
 /**

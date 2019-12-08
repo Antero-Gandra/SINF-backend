@@ -2,7 +2,7 @@ const Joi = require("@hapi/joi");
 const {
   Amount,
   AmountObject
-} = require("./Core");
+} = require("./common");
 const Item = require("./Item");
 
 /**

@@ -2,7 +2,7 @@ const Joi = require("@hapi/joi");
 const {
   AmountObject,
   Amount
-} = require("./Core");
+} = require("./common");
 
 /**
  * Validator for required fields of PriceListLineResource

@@ -1,5 +1,5 @@
 const Joi = require("@hapi/joi");
-const { ItemType } = require("./Core");
+const { ItemType } = require("./common");
 
 /**
  * Validator for required fields of ItemResource

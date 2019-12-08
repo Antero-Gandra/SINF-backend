@@ -1,5 +1,5 @@
 const Joi = require("@hapi/joi");
-const { DecimalPlaces } = require("./Core");
+const { DecimalPlaces } = require("./common");
 
 /**
  * Validator for required fields of CurrencyResource

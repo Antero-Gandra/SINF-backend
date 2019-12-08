@@ -15,7 +15,9 @@ const {
   SalesItem,
   SalesOrder,
   CustomerParty
-} = require("./primavera/All");
+} = require("./primavera");
+
+require("./techsinf/Supplier");
 
 const routeMap = {
   "/corePatterns/countries/odata": Country,

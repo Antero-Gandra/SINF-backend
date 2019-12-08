@@ -5,7 +5,7 @@ const {
   Decimal,
   DocumentLineStatus,
   ItemType,
-} = require("./Core");
+} = require("./common");
 
 /**
  * Validator for required fields of InvoiceLineResource (Sales)

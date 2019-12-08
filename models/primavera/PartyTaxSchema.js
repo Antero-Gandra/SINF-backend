@@ -1,5 +1,5 @@
 const Joi = require("@hapi/joi");
-const { } = require("./Core");
+const { } = require("./common");
 
 /**
  * Validator for required fields of resource PartyTaxSchemaResource

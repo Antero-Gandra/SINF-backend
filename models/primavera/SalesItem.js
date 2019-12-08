@@ -1,5 +1,5 @@
 const Joi = require("@hapi/joi");
-const { } = require("./Core");
+const { } = require("./common");
 const SalesPriceListLine = require("./SalesPriceListLine");
 const Item = require("./Item");
 

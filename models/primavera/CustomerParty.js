@@ -1,5 +1,5 @@
 const Joi = require("@hapi/joi");
-const { } = require("./Core");
+const { } = require("./common");
 const Party = require("./Party");
 
 // 1=Accrual, 2=Cash

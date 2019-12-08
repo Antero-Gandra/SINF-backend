@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www"
+    "dev": "nodemon ./bin/www",
+    "initdb": "psql -d techsinf -f database/sql/all.sql"
   },
   "dependencies": {
     "@hapi/joi": "^16.1.8",

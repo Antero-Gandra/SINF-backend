@@ -11,8 +11,8 @@ const tokenRequestData = {
 };
 
 function printToken(token) {
-  const lo = token.substring(0, 10);
-  const hi = token.substring(token.length - 10);
+  const lo = token.slice(0, 10);
+  const hi = token.slice(-10);
   console.log("Access Token: Bearer %s...%s", lo, hi);
 }
 

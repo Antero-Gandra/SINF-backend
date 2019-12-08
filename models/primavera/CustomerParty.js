@@ -9,7 +9,7 @@ const AccountingSchema = Joi.number().integer().valid(1, 2);
  * Validator for required fields of CustomerPartyResource
  * GET /salesCore/customerParties[/extension]
  */
-const CustomerParty = Joi.strict({
+const CustomerParty = Joi.object({
   id: Joi.string().uuid(),
   partyKey: Joi.string(), // PRIMARY KEY CustomerParty
 
@@ -41,7 +41,7 @@ const CustomerParty = Joi.strict({
 
   priceList: Joi.string().optional().allow(null), // PriceList
   priceListId: Joi.string().uuid().optional().allow(null),
-});
+}).required().options({ presence: "required" }).unknown(true);
 
 CustomerParty.extended = Party.concat(CustomerParty);
 

@@ -6,7 +6,7 @@ const Party = require("./Party");
  * Validator for required fields of SupplierPartyResource
  * GET /purchasesCore/supplierParties[/extension]
  */
-const SupplierParty = Joi.strict({
+const SupplierParty = Joi.object({
   id: Joi.string().uuid(),
   partyKey: Joi.string(), // PRIMARY KEY SupplierParty
 
@@ -39,7 +39,7 @@ const SupplierParty = Joi.strict({
   supplierItemPrices: Joi.array().optional().allow(null), // SupplierItemPrice
   // priceList: Joi.string().optional().allow(null),
   // priceListId: Joi.string().uuid().optional().allow(null),
-});
+}).required().options({ presence: "required" }).unknown(true);
 
 SupplierParty.extended = Party.concat(SupplierParty);
 

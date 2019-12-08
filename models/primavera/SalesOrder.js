@@ -13,7 +13,7 @@ const SalesOrderLine = require("./SalesOrderLine");
  * Validator for required fields of OrderResource (Sales)
  * GET /sales/orders
  */
-const SalesOrder = Joi.strict({
+const SalesOrder = Joi.object({
   id: Joi.string().uuid(),
   naturalKey: Joi.string(), // PRIMARY KEY SalesOrder
 
@@ -70,6 +70,6 @@ const SalesOrder = Joi.strict({
   // unloadingCountryId: Joi.string().uuid(),
 
   documentLines: Joi.array().items(SalesOrderLine.optional()).optional(),
-});
+}).required().options({ presence: "required" }).unknown(true);
 
 module.exports = SalesOrder;

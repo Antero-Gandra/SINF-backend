@@ -12,7 +12,7 @@ const SalesInvoiceLine = require("./SalesInvoiceLine");
  * Validator for required fields of InvoiceResource (Sales)
  * GET /billing/invoices
  */
-const SalesInvoice = Joi.strict({
+const SalesInvoice = Joi.object({
   id: Joi.string().uuid(),
   naturalKey: Joi.string(), // PRIMARY KEY SalesInvoice
 
@@ -76,6 +76,6 @@ const SalesInvoice = Joi.strict({
   unloadingCountryId: Joi.string().uuid(),
 
   documentLines: Joi.array().items(SalesInvoiceLine.optional()).optional(),
-});
+}).required().options({ presence: "required" }).unknown(true);
 
 module.exports = SalesInvoice;

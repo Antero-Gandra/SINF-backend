@@ -5,7 +5,7 @@ const { ItemType } = require("./Core");
  * Validator for required fields of ItemResource
  * GET /businessCore/items
  */
-const Item = Joi.strict({
+const Item = Joi.object({
   id: Joi.string().uuid(),
   itemKey: Joi.string(), // PRIMARY KEY Item
   description: Joi.string().optional().empty(null),
@@ -22,8 +22,14 @@ const Item = Joi.strict({
   brand: Joi.string().optional().empty(null), // Brand
   brandId: Joi.string().uuid().optional().empty(null),
 
+  brandModel: Joi.string().optional().empty(null), // BrandModel
+  brandModelId: Joi.string().optional().empty(null),
+
+  assortment: Joi.string().optional().empty(null), // Assortment
+  assortmentId: Joi.string().uuid().optional().empty(null),
+
   image: Joi.string().uri().optional().empty(null),
   imageThumbnail: Joi.string().uri().optional().empty(null),
-});
+}).required().options({ presence: "required" }).unknown(true);
 
 module.exports = Item;

@@ -12,7 +12,7 @@ const {
  * Validator for required fields of OrderLineResource (Purchases)
  * PurchaseOrder.documentLines[]
  */
-const PurchaseOrderLine = Joi.strict({
+const PurchaseOrderLine = Joi.object({
   id: Joi.string().uuid(),
   description: Joi.string(),
 
@@ -60,6 +60,6 @@ const PurchaseOrderLine = Joi.strict({
   receivedQuantityDecimalPlaces: DecimalPlaces.optional(),
   // deliveredQuantity: Decimal,
   // deliveredQuantityDecimalPlaces: DecimalPlaces.optional(),
-});
+}).required().options({ presence: "required" }).unknown(true);
 
 module.exports = PurchaseOrderLine;

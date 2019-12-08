@@ -5,7 +5,7 @@ const { } = require("./Core");
  * Validator for required fields of PartyResource
  * GET /businessCore/parties
  */
-const Party = Joi.strict({
+const Party = Joi.object({
   id: Joi.string().uuid(),
   partyKey: Joi.string(), // PRIMARY KEY Party
   name: Joi.string(),
@@ -24,6 +24,6 @@ const Party = Joi.strict({
   address: Joi.string().optional().empty(null), // Address
   contact: Joi.string().optional().empty(null), // Contact
   culture: Joi.string().optional().empty(null), // Culture
-});
+}).required().options({ presence: "required" }).unknown(true);
 
 module.exports = Party;

@@ -57,13 +57,7 @@ function validate(schema, response) {
   return { ok: num.bad === 0, num, errors };
 }
 
-function validateSend(schema, response, res) {
-  const { ok, num, errors } = validate(null, schema, response);
-  return res.send({ ok, num, errors, ...data });
-}
-
 module.exports = {
   validate,
-  validateSend,
   routeMap
 };

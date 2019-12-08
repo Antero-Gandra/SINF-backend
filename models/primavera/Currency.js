@@ -5,7 +5,7 @@ const { DecimalPlaces } = require("./Core");
  * Validator for required fields of CurrencyResource
  * GET /corePatterns/currencies
  */
-const Currency = Joi.strict({
+const Currency = Joi.object({
   id: Joi.string().uuid(), // Currency
   currencyKey: Joi.string(), // PRIMARY KEY Currency
 
@@ -20,6 +20,6 @@ const Currency = Joi.strict({
   validFrom: Joi.date().optional(),
   validTo: Joi.date().optional(),
   pricesFractionDigits: DecimalPlaces.optional(),
-});
+}).required().options({ presence: "required" }).unknown(true);
 
 module.exports = Currency;

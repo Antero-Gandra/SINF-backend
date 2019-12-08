@@ -5,9 +5,9 @@ const Item = require("./Item");
 
 /**
  * Validator for required fields of SalesItemResource
- * GET /salesCore/salesItems/extension
+ * GET /salesCore/salesItems[/extension]
  */
-const SalesItem = Joi.strict({
+const SalesItem = Joi.object({
   id: Joi.string().uuid(),
   itemKey: Joi.string(), // PRIMARY KEY SalesItem
 
@@ -29,7 +29,7 @@ const SalesItem = Joi.strict({
   // lastPriceAmount: Amount,
 
   priceListLines: Joi.array().items(SalesPriceListLine).optional().allow(null),
-});
+}).required().options({ presence: "required" }).unknown(true);
 
 SalesItem.extended = Item.concat(SalesItem);
 

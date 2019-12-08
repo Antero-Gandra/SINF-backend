@@ -32,10 +32,10 @@ router.get("/joi/*", function(req, res, next) {
     return res.send("Invalid URL: " + url);
   }
   api
-    .get(`/${tenant}/${organization}/${url}`, {
-      params: req.query
-    })
-    .then(response => validateSend(validator, response, res, next))
+    .get(`/${tenant}/${organization}/${url}`, { params: req.query })
+    .then(response =>
+      res.send({ ...validate(schema, response), ...response.data })
+    )
     .catch(next);
 });
 

@@ -12,7 +12,7 @@ const {
  * Validator for required fields of InvoiceLineResource (Purchases)
  * PurchaseInvoice.documentLines[]
  */
-const PurchaseInvoiceLine = Joi.strict({
+const PurchaseInvoiceLine = Joi.object({
   id: Joi.string().uuid(),
   description: Joi.string(),
 
@@ -60,6 +60,6 @@ const PurchaseInvoiceLine = Joi.strict({
   warehouseId: Joi.string().uuid().optional().empty(null),
   // delivery: Joi.string().optional().empty(null),
   // deliveryId: Joi.string().uuid().optional().empty(null)
-});
+}).required().options({ presence: "required" }).unknown(true);
 
 module.exports = PurchaseInvoiceLine;

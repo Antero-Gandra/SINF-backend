@@ -11,7 +11,7 @@ const {
  * Validator for required fields of InvoiceLineResource (Sales)
  * SalesInvoice.documentLines[]
  */
-const SalesInvoiceLine = Joi.strict({
+const SalesInvoiceLine = Joi.object({
   id: Joi.string().uuid(),
   description: Joi.string(),
 
@@ -57,6 +57,6 @@ const SalesInvoiceLine = Joi.strict({
   // warehouseId: Joi.string().uuid().optional().empty(null),
   delivery: Joi.string().optional().empty(null), // Delivery
   deliveryId: Joi.string().uuid().optional().empty(null), // Delivery
-});
+}).required().options({ presence: "required" }).unknown(true);
 
 module.exports = SalesInvoiceLine;

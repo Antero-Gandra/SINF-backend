@@ -8,7 +8,7 @@ const {
  * Validator for required fields of PriceListLineResource
  * SalesItem.priceListLines[]
  */
-const SalesPriceListLine = Joi.strict({
+const SalesPriceListLine = Joi.object({
   unit: Joi.string(), // Unit
   unitId: Joi.string().uuid(),
 
@@ -19,6 +19,6 @@ const SalesPriceListLine = Joi.strict({
   priceAmountAmount: Amount,
 
   priceList: Joi.string().optional(), // PriceList
-});
+}).required().options({ presence: "required" }).unknown(true);
 
 module.exports = SalesPriceListLine;

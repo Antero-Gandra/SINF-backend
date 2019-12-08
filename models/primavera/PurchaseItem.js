@@ -7,9 +7,9 @@ const Item = require("./Item");
 
 /**
  * Validator for required fields of PurchasesItemResource
- * GET /purchasesCore/purchasesItems/extension
+ * GET /purchasesCore/purchasesItems[/extension]
  */
-const PurchaseItem = Joi.strict({
+const PurchaseItem = Joi.object({
   id: Joi.string().uuid(),
   itemKey: Joi.string(), // PRIMARY KEY PurchaseItem
 
@@ -31,7 +31,7 @@ const PurchaseItem = Joi.strict({
   lastPriceAmount: Amount,
 
   // priceListLines: Joi.array()...
-});
+}).required().options({ presence: "required" }).unknown(true);
 
 PurchaseItem.extended = Item.concat(PurchaseItem);
 

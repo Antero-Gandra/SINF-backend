@@ -5,7 +5,7 @@ const { } = require("./Core");
  * Validator for required fields of PaymentTermResource
  * GET /financialCore/paymentTerms
  */
-const PaymentTerm = Joi.strict({
+const PaymentTerm = Joi.object({
   id: Joi.string().uuid(),
   paymentTermKey: Joi.string(), // PRIMARY KEY PaymentTerm
   description: Joi.string(),
@@ -16,6 +16,6 @@ const PaymentTerm = Joi.strict({
 
   validFrom: Joi.date().optional().empty(null),
   validTo: Joi.date().optional().empty(null),
-});
+}).required().options({ presence: "required" }).unknown(true);
 
 module.exports = PaymentTerm;

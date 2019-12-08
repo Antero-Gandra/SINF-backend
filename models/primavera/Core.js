@@ -20,9 +20,6 @@ const AmountObject = Joi.object({
 // * Extend Joi
 
 Joi.amount = name => ({[name]: AmountObject, [name + "Amount"]: Amount});
-Joi.strict = object => Joi.object(object).required().options({
-  presence: "required"
-}).unknown(true);
 
 /**
  * Primavera API Enumerations

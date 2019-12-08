@@ -9,7 +9,7 @@ const {
  * Validator for required fields of CustomerPartyResource
  * SupplierParty.supplierItemPrices[]
  */
-const SupplierItemPrice = Joi.strict({
+const SupplierItemPrice = Joi.object({
   id: Joi.string().uuid(),
 
   supplierPartyId: Joi.string().uuid(), // SupplierParty
@@ -27,6 +27,6 @@ const SupplierItemPrice = Joi.strict({
   priceAmount: Amount,
   lastPrice: AmountObject,
   lastPriceAmount: Amount,
-});
+}).required().options({ presence: "required" }).unknown(true);
 
 module.exports = SupplierParty;

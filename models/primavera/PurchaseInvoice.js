@@ -12,7 +12,7 @@ const PurchaseInvoiceLine = require("./PurchaseInvoiceLine");
  * Validator for required fields of InvoiceResource (Purchases)
  * GET /invoiceReceipt/invoices
  */
-const PurchaseInvoice = Joi.strict({
+const PurchaseInvoice = Joi.object({
   id: Joi.string().uuid(),
   naturalKey: Joi.string(), // PRIMARY KEY PurchaseInvoice
 
@@ -75,6 +75,6 @@ const PurchaseInvoice = Joi.strict({
   unloadingCountryId: Joi.string().uuid(),
 
   documentLines: Joi.array().items(PurchaseInvoiceLine.optional()).optional(),
-});
+}).required().options({ presence: "required" }).unknown(true);
 
 module.exports = PurchaseInvoice;

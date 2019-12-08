@@ -12,7 +12,7 @@ const PurchaseOrderLine = require("./PurchaseOrderLine");
  * Validator for required fields of OrderResource (Purchases)
  * GET /purchases/orders
  */
-const PurchaseOrder = Joi.strict({
+const PurchaseOrder = Joi.object({
   id: Joi.string().uuid(),
   naturalKey: Joi.string(), // PRIMARY KEY PurchaseOrder
 
@@ -69,6 +69,6 @@ const PurchaseOrder = Joi.strict({
   unloadingCountryId: Joi.string().uuid(),
 
   documentLines: Joi.array().items(PurchaseOrderLine.optional()).optional(),
-});
+}).required().options({ presence: "required" }).unknown(true);
 
 module.exports = PurchaseOrder;

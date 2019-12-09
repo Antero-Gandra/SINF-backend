@@ -7,6 +7,8 @@ CREATE SCHEMA public;
 ALTER SCHEMA public OWNER TO techsinf;
 COMMENT ON SCHEMA public IS 'standard public schema';
 
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -----------------------------------------------------------
 -- Types
 -----------------------------------------------------------
@@ -38,8 +40,8 @@ CREATE TABLE "user"(
   company_uuid              UUID NOT NULL, -- PRIMAVERA USER
   user_createdat            PAST_TIMESTAMP,
 
-  CONSTRAINT NaturalKey UNIQUE(tenant, organization, user_kind),
-  CONSTRAINT UniqueCompany UNIQUE(company_uuid, user_kind)
+  CONSTRAINT UserNaturalKey UNIQUE(tenant, organization, user_kind),
+  CONSTRAINT UserUniqueCompany UNIQUE(company_uuid, user_kind)
 );
 
 -- All suppliers.
@@ -67,7 +69,7 @@ CREATE TABLE brand(
   brand_uuid                UUID NOT NULL, -- PRIMAVERA SUPPLIER (PRIVATE)
   brand_createdat           PAST_TIMESTAMP,
 
-  CONSTRAINT UniqueBrand UNIQUE(brand_uuid),
+  CONSTRAINT BrandUniqueInstance UNIQUE(brand_uuid),
 
   FOREIGN KEY(supplier_id) REFERENCES
     supplier(supplier_id) ON DELETE CASCADE
@@ -80,7 +82,7 @@ CREATE TABLE subscription(
   customer_id               INTEGER NOT NULL,
   subscription_createdat    PAST_TIMESTAMP,
 
-  CONSTRAINT NaturalKey UNIQUE(brand_id, customer_id),
+  CONSTRAINT SubscriptionNaturalKey UNIQUE(brand_id, customer_id),
 
   FOREIGN KEY(brand_id) REFERENCES
     brand(brand_id) ON DELETE CASCADE,
@@ -92,7 +94,7 @@ CREATE TABLE subscription(
 CREATE TABLE secret_registry(
   secret_id                 SERIAL PRIMARY KEY,
   brand_id                  INTEGER NOT NULL,
-  secret_key                UUID NOT NULL,
+  secret_key                UUID NOT NULL DEFAULT uuid_generate_v4(),
   secret_createdat          PAST_TIMESTAMP,
 
   FOREIGN KEY(brand_id) REFERENCES
@@ -107,7 +109,7 @@ CREATE TABLE sp_item(
   customer_item_uuid        UUID NOT NULL, -- PRIMAVERA CUSTOMER (PRIVATE)
   sp_item_createdat         PAST_TIMESTAMP,
 
-  CONSTRAINT NaturalKey UNIQUE(supplier_item_uuid, customer_item_uuid),
+  CONSTRAINT SPItemNaturalKey UNIQUE(supplier_item_uuid, customer_item_uuid),
 
   FOREIGN KEY(subscription_id) REFERENCES
     subscription(subscription_id) ON DELETE CASCADE

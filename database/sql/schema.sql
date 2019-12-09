@@ -38,7 +38,7 @@ CREATE TABLE "user"(
   company_uuid              UUID NOT NULL, -- PRIMAVERA USER
   user_createdat            PAST_TIMESTAMP,
 
-  CONSTRAINT UniqueUser UNIQUE(tenant, organization, user_kind),
+  CONSTRAINT NaturalKey UNIQUE(tenant, organization, user_kind),
   CONSTRAINT UniqueCompany UNIQUE(company_uuid, user_kind)
 );
 
@@ -67,7 +67,7 @@ CREATE TABLE brand(
   brand_uuid                UUID NOT NULL, -- PRIMAVERA SUPPLIER (PRIVATE)
   brand_createdat           PAST_TIMESTAMP,
 
-  CONSTRAINT NoRepeatBrand UNIQUE(brand_uuid),
+  CONSTRAINT UniqueBrand UNIQUE(brand_uuid),
 
   FOREIGN KEY(supplier_id) REFERENCES
     supplier(supplier_id) ON DELETE CASCADE
@@ -80,7 +80,7 @@ CREATE TABLE subscription(
   customer_id               INTEGER NOT NULL,
   subscription_createdat    PAST_TIMESTAMP,
 
-  CONSTRAINT NoRepeat UNIQUE(brand_id, customer_id),
+  CONSTRAINT NaturalKey UNIQUE(brand_id, customer_id),
 
   FOREIGN KEY(brand_id) REFERENCES
     brand(brand_id) ON DELETE CASCADE,
@@ -107,7 +107,7 @@ CREATE TABLE sp_item(
   customer_item_uuid        UUID NOT NULL, -- PRIMAVERA CUSTOMER (PRIVATE)
   sp_item_createdat         PAST_TIMESTAMP,
 
-  CONSTRAINT NoRepeatItem UNIQUE(supplier_item_uuid, customer_item_uuid),
+  CONSTRAINT NaturalKey UNIQUE(supplier_item_uuid, customer_item_uuid),
 
   FOREIGN KEY(subscription_id) REFERENCES
     subscription(subscription_id) ON DELETE CASCADE

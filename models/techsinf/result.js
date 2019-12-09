@@ -5,7 +5,7 @@ const Result = {
   all: ({ rows, fields, rowCount }) => ({ rows, fields, rowCount }),
   filter: key => ({ rows, rowCount, ...rest }) => {
     if (typeof key === "string") for (row of rows) delete row[key];
-    if (typeof key === "array") for (row of rows) for (k in key) delete row[k];
+    if (Array.isArray(key)) for (row of rows) for (k in key) delete row[k];
     return { rows, rowCount, ...rest };
   }
 };

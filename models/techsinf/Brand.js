@@ -6,6 +6,16 @@ const Brand = {
     return db.query("SELECT * FROM brand").then(Result.many);
   },
 
+  async get(brand_id) {
+    return db
+      .query(
+        `SELECT * FROM brand
+       WHERE brand_id = $1`,
+        [brand_id]
+      )
+      .then(Result.one);
+  },
+
   async allSupplier(supplier_id) {
     return db
       .query(

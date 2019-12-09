@@ -6,17 +6,17 @@ const Supplier = {
     return db.query("SELECT * FROM supplier_user").then(Result.many);
   },
 
-  async get(id) {
+  async get(supplier_id) {
     return db
       .query(
         `SELECT * FROM supplier_user
          WHERE supplier_id = $1`,
-        [id]
+        [supplier_id]
       )
       .then(Result.one);
   },
 
-  async find(tenant, organization) {
+  async find({ tenant, organization }) {
     return db
       .query(
         `SELECT * FROM supplier_user
@@ -26,7 +26,7 @@ const Supplier = {
       .then(Result.one);
   },
 
-  async create(tenant, organization, company_uuid) {
+  async create({ tenant, organization, company_uuid }) {
     return db
       .query(
         `INSERT INTO supplier_user(supplier_tenant,
@@ -38,12 +38,12 @@ const Supplier = {
       .then(Result.one);
   },
 
-  async delete(id) {
+  async delete(supplier_id) {
     return db
       .query(
         `DELETE FROM supplier_user
          WHERE supplier_id = $1 RETURNING *`,
-        [id]
+        [supplier_id]
       )
       .then(Result.count);
   }

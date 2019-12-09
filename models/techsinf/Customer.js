@@ -1,16 +1,16 @@
 const db = require("../../database");
 const Result = require("./result");
 
-const Supplier = {
+const Customer = {
   async all() {
-    return db.query("SELECT * FROM supplier_user").then(Result.many);
+    return db.query("SELECT * FROM customer_user").then(Result.many);
   },
 
   async get(id) {
     return db
       .query(
-        `SELECT * FROM supplier_user
-         WHERE supplier_id = $1`,
+        `SELECT * FROM customer_user
+         WHERE customer_id = $1`,
         [id]
       )
       .then(Result.one);
@@ -19,8 +19,8 @@ const Supplier = {
   async find(tenant, organization) {
     return db
       .query(
-        `SELECT * FROM supplier_user
-         WHERE supplier_tenant = $1 AND supplier_organization = $2`,
+        `SELECT * FROM customer_user
+         WHERE customer_tenant = $1 AND customer_organization = $2`,
         [tenant, organization]
       )
       .then(Result.one);
@@ -29,9 +29,9 @@ const Supplier = {
   async create(tenant, organization, company_uuid) {
     return db
       .query(
-        `INSERT INTO supplier_user(supplier_tenant,
-                                 supplier_organization,
-                                 supplier_company_uuid)
+        `INSERT INTO customer_user(customer_tenant,
+                                 customer_organization,
+                                 customer_company_uuid)
        VALUES ($1, $2, $3) RETURNING *`,
         [tenant, organization, company_uuid]
       )
@@ -41,12 +41,12 @@ const Supplier = {
   async delete(id) {
     return db
       .query(
-        `DELETE FROM supplier_user
-         WHERE supplier_id = $1 RETURNING *`,
+        `DELETE FROM customer_user
+         WHERE customer_id = $1 RETURNING *`,
         [id]
       )
       .then(Result.count);
   }
 };
 
-module.exports = Supplier;
+module.exports = Customer;

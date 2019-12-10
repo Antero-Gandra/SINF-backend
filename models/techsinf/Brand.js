@@ -10,7 +10,7 @@ const Brand = {
     return db
       .query(
         `SELECT * FROM brand
-       WHERE brand_id = $1`,
+         WHERE brand_id = $1`,
         [brand_id]
       )
       .then(Result.one);

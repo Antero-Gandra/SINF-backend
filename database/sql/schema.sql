@@ -37,7 +37,7 @@ CREATE TABLE "user"(
   tenant                    VARCHAR(20) NOT NULL,
   organization              VARCHAR(20) NOT NULL,
   user_kind                 TECHSINF_ROLE NOT NULL,
-  company_uuid              UUID NOT NULL, -- PRIMAVERA USER
+  company_uuid              UUID NOT NULL, -- PRIMAVERA USER (PRIVATE)
   user_createdat            PAST_TIMESTAMP,
 
   CONSTRAINT UserNaturalKey UNIQUE(tenant, organization, user_kind),

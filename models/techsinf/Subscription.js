@@ -10,7 +10,7 @@ const Subscription = {
     return db
       .query(
         `SELECT * FROM subscription
-       WHERE subscription_id = $1`,
+         WHERE subscription_id = $1`,
         [subscription_id]
       )
       .then(Result.one);

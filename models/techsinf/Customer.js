@@ -32,7 +32,7 @@ const Customer = {
         `INSERT INTO customer_user(customer_tenant,
                                  customer_organization,
                                  customer_company_uuid)
-       VALUES ($1, $2, $3) RETURNING *`,
+         VALUES ($1, $2, $3) RETURNING *`,
         [tenant, organization, company_uuid]
       )
       .then(Result.one);

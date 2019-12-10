@@ -2,10 +2,12 @@ const db = require("../../database");
 const Result = require("./result");
 
 const Supplier = {
+  // Get all suppliers (development only)
   async all() {
     return db.query("SELECT * FROM supplier_user").then(Result.many);
   },
 
+  // Get supplier with the given id.
   async get(supplier_id) {
     return db
       .query(
@@ -16,6 +18,7 @@ const Supplier = {
       .then(Result.one);
   },
 
+  // Find supplier with the given tenant and organization identifiers.
   async find({ tenant, organization }) {
     return db
       .query(
@@ -26,18 +29,20 @@ const Supplier = {
       .then(Result.one);
   },
 
+  // Create a new supplier for the given tenant, organization, and company triple.
   async create({ tenant, organization, company_uuid }) {
     return db
       .query(
         `INSERT INTO supplier_user(supplier_tenant,
-                                 supplier_organization,
-                                 supplier_company_uuid)
+                                   supplier_organization,
+                                   supplier_company_uuid)
          VALUES ($1, $2, $3) RETURNING *`,
         [tenant, organization, company_uuid]
       )
       .then(Result.one);
   },
 
+  // Delete the given supplier. Authorization is assumed.
   async delete(supplier_id) {
     return db
       .query(

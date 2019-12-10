@@ -2,6 +2,8 @@
 -- Views
 -----------------------------------------
 
+-- I made these a priori, many will be useless
+
 -- * ABSTRACT USER, SUPPLIER, CUSTOMER
 
 -- Practical supplier view

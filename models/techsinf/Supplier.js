@@ -7,7 +7,7 @@ const Supplier = {
     return db.query("SELECT * FROM supplier_user").then(Result.many);
   },
 
-  // Get supplier with the given id.
+  // Get supplier with the given id. Authorization is assumed.
   async get(supplier_id) {
     return db
       .query(

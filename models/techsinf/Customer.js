@@ -7,7 +7,7 @@ const Customer = {
     return db.query("SELECT * FROM customer_user").then(Result.many);
   },
 
-  // Get customer with the given id.
+  // Get customer with the given id. Authorization is assumed.
   async get(customer_id) {
     return db
       .query(

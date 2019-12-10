@@ -109,7 +109,7 @@ CREATE TABLE sp_item(
   customer_item_uuid        UUID NOT NULL, -- PRIMAVERA CUSTOMER (PRIVATE)
   sp_item_createdat         PAST_TIMESTAMP,
 
-  CONSTRAINT SPItemNaturalKey UNIQUE(supplier_item_uuid, customer_item_uuid),
+  CONSTRAINT SPItemNaturalKey UNIQUE(customer_item_uuid),
 
   FOREIGN KEY(subscription_id) REFERENCES
     subscription(subscription_id) ON DELETE CASCADE

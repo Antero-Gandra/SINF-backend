@@ -5,7 +5,7 @@ const Country = ({ tenant, organization }) => {
   const url = `/${tenant}/${organization}/corePatterns/countries`;
 
   return {
-    ...common({ url, schema: JoiCountry })
+    ...common({ url, schema: JoiCountry, name: "Country" })
   };
 };
 

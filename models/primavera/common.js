@@ -3,39 +3,44 @@ const { api } = require("../../utils/endpoints");
 
 const JoiSchema = Joi.object().schema();
 
-const check = schema => {
+const check = ({ schema, url }) => {
   const ok = JoiSchema.validate(schema);
   if (ok.error) throw ok.error;
 
   return {
-    one(response) {
-      const result = schema.validate(response);
+    one(data) {
+      const result = schema.validate(data);
       if (result.error) {
-        console.error("API Schema error: %o", result.error.details[0]);
+        const detail = result.error.details[0];
+        console.error("Schema error in %s:\n%o", url, detail);
       }
-      return response;
+      return data;
     },
 
-    many(response) {
-      for (item in response) {
-        const result = schema.validate(response);
+    many(data) {
+      for (item in data) {
+        const result = schema.validate(item);
         if (result.error) {
-          console.error("API Schema error: %o", result.error.details[0]);
+          const detail = result.error.details[0];
+          console.error("Schema error in %s:\n%o", url, detail);
           break;
         }
       }
-      return response;
+      return data;
     }
   };
 };
 
 const common = ({ url, schema }) => {
-  const expect = check(schema);
+  const expect = check({ schema, url });
 
   return {
+    url,
+
     async get(id) {
       return api
         .get(`${url}/${id}`)
+        .then(response => response.data)
         .then(expect.one)
         .catch(error => {
           if (error.status === 404) return null;
@@ -44,13 +49,16 @@ const common = ({ url, schema }) => {
     },
 
     async all() {
-      return api.get(url).then(expect.many);
+      return api
+        .get(url)
+        .then(response => response.data)
+        .then(expect.many);
     },
 
     async query(params) {
       return api
         .get(`${url}/odata`, params)
-        .then(response => response.items)
+        .then(response => response.data.items)
         .then(expect.many);
     },
 
@@ -66,4 +74,4 @@ const common = ({ url, schema }) => {
   };
 };
 
-module.exports = { common };
+module.exports = common;

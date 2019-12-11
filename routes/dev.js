@@ -3,6 +3,24 @@ const { api } = require("../utils/endpoints");
 const pool = require("../database");
 const { requestToken } = require("../utils/token");
 const { joiRouteMap, validate } = require("../models");
+const {
+  Country,
+  Currency,
+  CustomerParty,
+  Item,
+  ItemTaxSchema,
+  Party,
+  PartyTaxSchema,
+  PaymentMethod,
+  PaymentTerm,
+  PurchaseInvoice,
+  PurchaseItem,
+  PurchaseOrder,
+  SalesInvoice,
+  SalesItem,
+  SalesOrder,
+  SupplierParty
+} = require("../models/primavera");
 
 // test on A
 const tenant = process.env.A_TENANT;
@@ -22,8 +40,8 @@ router.get("/get/*", function(req, res, next) {
 });
 
 /**
- * Send a GET request to any Primavera endpoints with any query parameters.
- * Validate the results against the Joi models.
+ * Send a GET request to any Primavera endpoint with any query parameters.
+ * Validate the results against the Joi schemas.
  */
 router.get("/joi/*", function(req, res, next) {
   const url = req.params[0];
@@ -40,7 +58,7 @@ router.get("/joi/*", function(req, res, next) {
 });
 
 /**
- * Validate all endpoints against the Joi models.
+ * Validate all endpoints against the Joi schemas.
  */
 router.get("/check", function(req, res, next) {
   const promises = Object.keys(joiRouteMap).map(url =>
@@ -62,6 +80,21 @@ router.get("/check", function(req, res, next) {
       })
     )
     .catch(next);
+});
+
+/**
+ * Test Primavera models.
+ */
+router.get("/models", async function(req, res, next) {
+  const sub = { tenant, organization };
+
+  try {
+    const country = await Country(sub).get("AM");
+    const currency = await Currency(sub).get("EUR");
+    res.send({ country, currency });
+  } catch (error) {
+    res.send({ error });
+  }
 });
 
 router.get("/post/sales/orders", function(req, res, next) {

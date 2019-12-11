@@ -68,6 +68,13 @@ const common = ({ url, schema }) => {
 
     async update(id, field, data) {
       return api.put(`${url}/${id}/${field}`, data);
+    },
+
+    async delete(id) {
+      return api
+        .delete(`${url}/${id}`)
+        .then(response => response.data)
+        .then(expect.one);
     }
   };
 };

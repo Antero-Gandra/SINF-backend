@@ -1,6 +1,7 @@
 const JoiPurchaseItem = require("./joi/PurchaseItem");
 const common = require("./common");
 
+// https://jasminsoftware.github.io/purchasescore.purchasesitems.html
 const PurchaseItem = ({ tenant, organization }) => {
   const url = `/${tenant}/${organization}/purchasesCore/purchasesItems`;
 

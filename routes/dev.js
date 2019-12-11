@@ -91,7 +91,10 @@ router.get("/models", async function(req, res, next) {
   try {
     const country = await Country(sub).get("AM");
     const currency = await Currency(sub).get("EUR");
-    res.send({ country, currency });
+    const customerParty = await CustomerParty(sub).get("ALCAD");
+    const item = await Item(sub).get("PORTES");
+    const itemTaxSchema = await ItemTaxSchema(sub).get("IVA-TI");
+    res.send({ country, currency, customerParty, item, itemTaxSchema });
   } catch (error) {
     res.send({ error });
   }

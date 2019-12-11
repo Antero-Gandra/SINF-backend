@@ -57,15 +57,13 @@ const common = ({ url, schema }) => {
 
     async query(params) {
       return api
-        .get(`${url}/odata`, params)
+        .get(`${url}/odata`, { params })
         .then(response => response.data.items)
         .then(expect.many);
     },
 
     async create(data) {
-      const result = schema.validate(data);
-      if (result.error) throw result.error;
-      return api.post(url, result.value);
+      return api.post(url, data);
     },
 
     async update(id, field, data) {

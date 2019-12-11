@@ -2,7 +2,7 @@ const express = require("express");
 const { api } = require("../utils/endpoints");
 const pool = require("../database");
 const { requestToken } = require("../utils/token");
-const { routeMap, validate } = require("../models");
+const { joiRouteMap, validate } = require("../models");
 
 // test on A
 const tenant = process.env.A_TENANT;
@@ -27,7 +27,7 @@ router.get("/get/*", function(req, res, next) {
  */
 router.get("/joi/*", function(req, res, next) {
   const url = req.params[0];
-  const validator = routeMap["/" + url];
+  const validator = joiRouteMap["/" + url];
   if (!validator) {
     return res.send("Invalid URL: " + url);
   }
@@ -43,14 +43,14 @@ router.get("/joi/*", function(req, res, next) {
  * Validate all endpoints against the Joi models.
  */
 router.get("/check", function(req, res, next) {
-  const promises = Object.keys(routeMap).map(url =>
+  const promises = Object.keys(joiRouteMap).map(url =>
     api
       .get(`/${tenant}/${organization}${url}`, {
         params: { $inlinecount: "allpages", ...req.query }
       })
       .then(response => ({
         url,
-        ...validate(routeMap[url], response)
+        ...validate(joiRouteMap[url], response)
       }))
       .catch(err => console.log(err))
   );

@@ -15,11 +15,11 @@ const {
   SalesItem,
   SalesOrder,
   CustomerParty
-} = require("./primavera");
+} = require("./primavera/joi");
 
 require("./techsinf/Supplier");
 
-const routeMap = {
+const joiRouteMap = {
   "/corePatterns/countries/odata": Country,
   "/corePatterns/currencies/odata": Currency,
   "/businessCore/items/odata": Item,
@@ -61,5 +61,5 @@ function validate(schema, response) {
 
 module.exports = {
   validate,
-  routeMap
+  joiRouteMap: joiRouteMap
 };

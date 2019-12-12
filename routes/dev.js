@@ -1,9 +1,9 @@
 const express = require("express");
 const { api } = require("../utils/endpoints");
-const pool = require("../database");
+//const pool = require("../database");
 const { requestToken } = require("../utils/token");
-const { joiRouteMap, validate } = require("../models");
-const {
+//const { joiRouteMap, validate } = require("../models");
+/*const {
   Country,
   Currency,
   CustomerParty,
@@ -21,7 +21,7 @@ const {
   SalesOrder,
   SupplierParty
 } = require("../models/primavera");
-
+*/
 // test on A
 const tenant = process.env.A_TENANT;
 const organization = process.env.A_ORGANIZATION;
@@ -35,6 +35,30 @@ router.get("/get/*", function(req, res, next) {
   const url = req.params[0];
   api
     .get(`/${tenant}/${organization}/${url}`, { params: req.query })
+    .then(response => res.send(response.data))
+    .catch(error => res.send(error));
+});
+
+router.get("/sync/customer", function(req, res, next) {
+  api
+    .get(`/${tenant}/${organization}/purchases/orders`)
+    .then(response => res.send(response.data))
+    .catch(error => res.send(error));
+
+    api
+    .get(`/${tenant}/${organization}/purchasesCore/purchasesItems`)
+    .then(response => res.send(response.data))
+    .catch(error => res.send(error));
+});
+
+router.get("/sync/supplier", function(req, res, next) {
+  api
+    .get(`/${tenant}/${organization}/billing/invoices/`)
+    .then(response => res.send(response.data))
+    .catch(error => res.send(error));
+
+    api
+    .get(`/${tenant}/${organization}/salescore/salesitems`)
     .then(response => res.send(response.data))
     .catch(error => res.send(error));
 });

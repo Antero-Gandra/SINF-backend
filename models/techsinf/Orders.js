@@ -33,9 +33,32 @@ const Orders = {
         [customer_id]
       )
       .then(Result.many);
-  }
+  },
 
-  // ...
+  // Create new order from a purchase order
+  async create({ subscription_id, purchase_order_uuid }) {
+    return db
+      .query(
+        `INSERT INTO orders(subscription_id,
+                            purchase_order_uuid)
+         VALUES ($1, $2) RETURNING *`,
+        [subscription_id, purchase_order_uuid]
+      )
+      .then(Result.one);
+  },
+
+  // Delete order
+  async delete(order_id) {
+    return db
+      .query(
+        `DELETE FROM orders
+         WHERE order_id = $1 RETURNING *`,
+        [order_id]
+      )
+      .then(Result.count);
+  }
 };
+
+Object.freeze(Orders);
 
 module.exports = Orders;

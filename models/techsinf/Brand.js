@@ -59,4 +59,6 @@ const Brand = {
   }
 };
 
+Object.freeze(Brand);
+
 module.exports = Brand;

@@ -75,4 +75,6 @@ const Subscription = {
   }
 };
 
+Object.freeze(Subscription);
+
 module.exports = Subscription;

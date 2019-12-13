@@ -20,6 +20,10 @@ require("./utils/token");
 
 const env = process.env.NODE_ENV || "dev";
 const app = express();
+const corsOptions = {
+  origin: "*",
+  optionsSuccessStatus: 200
+};
 
 // setup html template engine + console logging for development
 app.set("view engine", "pug");
@@ -30,7 +34,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static("public"));
 app.use(cookieParser());
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(helmet());
 
 // routers

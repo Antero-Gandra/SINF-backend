@@ -36,4 +36,6 @@ const SecretRegistry = {
   }
 };
 
+Object.freeze(SecretRegistry);
+
 module.exports = SecretRegistry;

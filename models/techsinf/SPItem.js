@@ -58,4 +58,6 @@ const SPItem = {
   }
 };
 
+Object.freeze(SPItem);
+
 module.exports = SPItem;

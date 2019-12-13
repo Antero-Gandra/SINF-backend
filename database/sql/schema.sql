@@ -126,6 +126,9 @@ CREATE TABLE orders(
   sales_order_uuid          UUID NULL,
   order_createdat           PAST_TIMESTAMP,
 
+  CONSTRAINT UniquePurchaseOrder UNIQUE(purchase_order_uuid),
+  CONSTRAINT UniqueSalesOrder UNIQUE(sales_order_uuid),
+
   FOREIGN KEY(subscription_id) REFERENCES
     subscription(subscription_id) ON DELETE CASCADE
 );
@@ -137,6 +140,9 @@ CREATE TABLE invoice(
   purchase_invoice_uuid     UUID NULL,     -- PRIMAVERA CUSTOMER (PRIVATE)
   sales_invoice_uuid        UUID NOT NULL, -- PRIMAVERA SUPPLIER (PRIVATE)
   invoice_createdat         PAST_TIMESTAMP,
+
+  CONSTRAINT UniquePurchaseInvoice UNIQUE(purchase_invoice_uuid),
+  CONSTRAINT UniqueSalesInvoice UNIQUE(sales_invoice_uuid),
 
   FOREIGN KEY(order_id) REFERENCES
     orders(order_id) ON DELETE CASCADE

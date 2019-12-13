@@ -19,12 +19,13 @@ const Supplier = {
   },
 
   // Find supplier with the given tenant and organization identifiers.
-  async find({ tenant, organization }) {
+  async find({ tenant, organization, company_uuid }) {
     return db
       .query(
         `SELECT * FROM supplier_user
-         WHERE supplier_tenant = $1 AND supplier_organization = $2`,
-        [tenant, organization]
+         WHERE supplier_tenant = $1 AND supplier_organization = $2
+         AND supplier_company_uuid = $3`,
+        [tenant, organization, company_uuid]
       )
       .then(Result.one);
   },
@@ -53,5 +54,7 @@ const Supplier = {
       .then(Result.count);
   }
 };
+
+Object.freeze(Supplier);
 
 module.exports = Supplier;

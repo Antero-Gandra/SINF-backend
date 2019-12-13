@@ -1,27 +1,16 @@
 const express = require("express");
 const { api } = require("../utils/endpoints");
-//const pool = require("../database");
 const { requestToken } = require("../utils/token");
-//const { joiRouteMap, validate } = require("../models");
-/*const {
+const { joiRouteMap, validate } = require("../models/primavera/joi/validator");
+const {
   Country,
   Currency,
   CustomerParty,
   Item,
-  ItemTaxSchema,
-  Party,
-  PartyTaxSchema,
-  PaymentMethod,
-  PaymentTerm,
-  PurchaseInvoice,
-  PurchaseItem,
-  PurchaseOrder,
-  SalesInvoice,
-  SalesItem,
-  SalesOrder,
-  SupplierParty
+  ItemTaxSchema
 } = require("../models/primavera");
-*/
+const { Customer, Supplier } = require("../models/techsinf");
+
 // test on A
 const tenant = process.env.A_TENANT;
 const organization = process.env.A_ORGANIZATION;
@@ -39,13 +28,33 @@ router.get("/get/*", function(req, res, next) {
     .catch(error => res.send(error));
 });
 
+router.get("/db/customer/create", async function(req, res, next) {
+  const customer = await Customer.create({
+    tenant: "227113",
+    organization: "227113-0012",
+    company_uuid: "14341234-5678-9876-1234-098767891234"
+  });
+  return res.send(customer);
+});
+
+router.get("/db/customer/delete", async function(req, res, next) {
+  const customer = await Customer.find({
+    tenant: "227113",
+    organization: "227113-0012",
+    company_uuid: "14341234-5678-9876-1234-098767891234"
+  });
+  if (customer == null) return res.send({ message: "not found" });
+  const count = await Customer.delete(customer.customer_id);
+  return res.send({ message: "Deleted if count>0", count, customer });
+});
+
 router.get("/sync/customer", function(req, res, next) {
   api
     .get(`/${tenant}/${organization}/purchases/orders`)
     .then(response => res.send(response.data))
     .catch(error => res.send(error));
 
-    api
+  api
     .get(`/${tenant}/${organization}/purchasesCore/purchasesItems`)
     .then(response => res.send(response.data))
     .catch(error => res.send(error));
@@ -57,7 +66,7 @@ router.get("/sync/supplier", function(req, res, next) {
     .then(response => res.send(response.data))
     .catch(error => res.send(error));
 
-    api
+  api
     .get(`/${tenant}/${organization}/salescore/salesitems`)
     .then(response => res.send(response.data))
     .catch(error => res.send(error));
@@ -124,6 +133,10 @@ router.get("/models", async function(req, res, next) {
   }
 });
 
+/**
+ *
+ */
+
 router.get("/post/sales/orders", function(req, res, next) {
   api
     .post(`/${tenant}/${organization}/sales/orders`, {
@@ -147,17 +160,6 @@ router.get("/post/sales/orders", function(req, res, next) {
     })
     .then(response => res.send(response.data))
     .catch(error => res.send(error));
-});
-
-/**
- * Database SELECT
- */
-router.get("/db/test", function(req, res, next) {
-  pool.query("SELECT * FROM test", (err, results) => {
-    if (err) throw err;
-    const { rows, rowCount } = results;
-    res.status(200).json({ rows, rowCount });
-  });
 });
 
 /**

@@ -5,12 +5,12 @@ const { Customer, Supplier } = require("../models/techsinf");
 router.post("/customer/add", function(req, res, next) {
   let tenant = req.body.tenant;
   let organization = req.body.organization;
-  let company = req.body.company;
+  let company_uuid = req.body.company;
 
-  Customer.find({ tenant, organization })
+  Customer.find({ tenant, organization, company_uuid })
     .then(response => {
       if (response === null) {
-        Customer.create({ tenant, organization, company_uuid: company })
+        Customer.create({ tenant, organization, company_uuid: company_uuid })
           .then(response => {
             console.log(response);
           })

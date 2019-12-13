@@ -13,6 +13,7 @@ const express = require("express");
 // router imports
 const devRouter = require("./routes/dev");
 const productsRouter = require("./routes/product");
+const userRouter = require("./routes/user");
 
 // setup endpoints and fetch access_token
 require("./utils/token");
@@ -36,6 +37,7 @@ app.use(helmet());
 
 app.use("/product", productsRouter);
 app.use("/dev", devRouter);
+app.use("/user", userRouter);
 
 app.use(function(err, req, res, next) {
   res.send(err);

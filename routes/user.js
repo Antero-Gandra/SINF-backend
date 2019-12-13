@@ -1,33 +1,33 @@
-const { api } = require("../utils/endpoints");
-
 const express = require("express");
 const router = express.Router();
+const { Customer, Supplier } = require("../models/techsinf");
 
-const tenant = process.env.A_TENANT;
-const organization = process.env.A_ORGANIZATION;
+router.post("/customer/add", function(req, res, next) {
+    let tenant = req.body.tenant;
+    let organization = req.body.organization;
+    let company = req.body.company;
 
-router.get("/customer/add", function(req, res, next) {
-  let productId = req.params.id;
+    Customer.find({ tenant, organization })
+        .then(response => {
+            if(response === null){
+                Customer.create({ tenant, organization, company })
+                    .then(response => {
+                        console.log(response);
+                    })
+                    .catch(error => {console.log("entering catch"); res.send(error)});
+            }
 
-  api
-    .post(``)
-    .then(response => {
-      res.send(response.data);
-    })
-    .catch(error => {
-      console.log(error);
-    });
+            else {
+                res.send("User already created ..");
+            }
+        })
+        .catch(error => res.send(error));
 });
 
-router.get("/supplier/add", function(req, res, next) {
-  api
-    .get(`/${tenant}/${organization}/salesCore/salesItems/extension`)
-    .then(response => {
-      res.send(response.data);
-    })
-    .catch(error => {
-      console.log(error);
-    });
+router.post("/supplier/add", function(req, res, next) {
+    let tenant = req.body.tenant;
+    let organization = req.body.organization;
+    let company = req.body.company;
 });
 
 module.exports = router;

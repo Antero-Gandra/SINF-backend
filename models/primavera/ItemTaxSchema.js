@@ -1,18 +1,13 @@
-const Joi = require("@hapi/joi");
-const { } = require("./common");
+const JoiItemTaxSchema = require("./joi/ItemTaxSchema");
+const common = require("./common");
 
-/**
- * Validator for required fields of ItemTaxSchemaResource
- * GET /taxesCore/itemTaxSchemas
- */
-const ItemTaxSchema = Joi.object({
-  id: Joi.string().uuid(),
-  taxCodeItemGroupKey: Joi.string(), // PRIMARY KEY ItemTaxSchema
-  description: Joi.string().optional().empty(null).empty('').default(''),
+// https://jasminsoftware.github.io/taxescore.itemtaxschemas.html
+const ItemTaxSchema = ({ tenant, organization }) => {
+  const url = `/${tenant}/${organization}/taxesCore/ItemTaxSchemas`;
 
-  isExternallyManaged: Joi.boolean(),
-
-  // ...
-}).required().options({ presence: "required" }).unknown(true);
+  return {
+    ...common({ url, schema: JoiItemTaxSchema })
+  };
+};
 
 module.exports = ItemTaxSchema;

@@ -2,10 +2,12 @@ const db = require("../../database");
 const Result = require("./result");
 
 const Customer = {
+  // Get all customers (development only)
   async all() {
     return db.query("SELECT * FROM customer_user").then(Result.many);
   },
 
+  // Get customer with the given id. Authorization is assumed.
   async get(customer_id) {
     return db
       .query(
@@ -16,6 +18,7 @@ const Customer = {
       .then(Result.one);
   },
 
+  // Find customer with the given tenant and organization identifiers.
   async find({ tenant, organization }) {
     return db
       .query(
@@ -26,18 +29,20 @@ const Customer = {
       .then(Result.one);
   },
 
+  // Create a new customer for the given tenant, organization, and company triple.
   async create({ tenant, organization, company_uuid }) {
     return db
       .query(
         `INSERT INTO customer_user(customer_tenant,
-                                 customer_organization,
-                                 customer_company_uuid)
-       VALUES ($1, $2, $3) RETURNING *`,
+                                   customer_organization,
+                                   customer_company_uuid)
+         VALUES ($1, $2, $3) RETURNING *`,
         [tenant, organization, company_uuid]
       )
       .then(Result.one);
   },
 
+  // Delete the given customer. Authorization is assumed.
   async delete(customer_id) {
     return db
       .query(

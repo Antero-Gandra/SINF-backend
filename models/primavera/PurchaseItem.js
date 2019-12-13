@@ -1,38 +1,13 @@
-const Joi = require("@hapi/joi");
-const {
-  Amount,
-  AmountObject
-} = require("./common");
-const Item = require("./Item");
+const JoiPurchaseItem = require("./joi/PurchaseItem");
+const common = require("./common");
 
-/**
- * Validator for required fields of PurchasesItemResource
- * GET /purchasesCore/purchasesItems[/extension]
- */
-const PurchaseItem = Joi.object({
-  id: Joi.string().uuid(),
-  itemKey: Joi.string(), // PRIMARY KEY PurchaseItem
+// https://jasminsoftware.github.io/purchasescore.purchasesitems.html
+const PurchaseItem = ({ tenant, organization }) => {
+  const url = `/${tenant}/${organization}/purchasesCore/purchasesItems`;
 
-  unit: Joi.string(), // Unit
-  unitId: Joi.string().uuid(),
-
-  currency: Joi.string(), // Currency
-  currencyId: Joi.string().uuid(),
-
-  itemTaxSchema: Joi.string(), // ItemTaxSchema
-  itemTaxSchemaId: Joi.string().uuid(),
-
-  expenseAccount: Joi.string(), // Account
-  expenseAccountId: Joi.string().uuid(),
-  // incomeAccount: Joi.string(),
-  // incomeAccountId: Joi.string().uuid(),
-
-  lastPrice: AmountObject,
-  lastPriceAmount: Amount,
-
-  // priceListLines: Joi.array()...
-}).required().options({ presence: "required" }).unknown(true);
-
-PurchaseItem.extended = Item.concat(PurchaseItem);
+  return {
+    ...common({ url, schema: JoiPurchaseItem })
+  };
+};
 
 module.exports = PurchaseItem;

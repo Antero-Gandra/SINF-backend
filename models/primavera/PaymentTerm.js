@@ -1,21 +1,13 @@
-const Joi = require("@hapi/joi");
-const { } = require("./common");
+const JoiPaymentTerm = require("./joi/PaymentTerm");
+const common = require("./common");
 
-/**
- * Validator for required fields of PaymentTermResource
- * GET /financialCore/paymentTerms
- */
-const PaymentTerm = Joi.object({
-  id: Joi.string().uuid(),
-  paymentTermKey: Joi.string(), // PRIMARY KEY PaymentTerm
-  description: Joi.string(),
+// https://jasminsoftware.github.io/financialcore.paymentterms.html
+const PaymentTerm = ({ tenant, organization }) => {
+  const url = `/${tenant}/${organization}/financialCore/paymentTerms`;
 
-  useInAccountsReceivable: Joi.boolean(),
-  useInAccountsPayable: Joi.boolean(),
-  daysFromReferenceDate: Joi.number().integer().min(0),
-
-  validFrom: Joi.date().optional().empty(null),
-  validTo: Joi.date().optional().empty(null),
-}).required().options({ presence: "required" }).unknown(true);
+  return {
+    ...common({ url, schema: JoiPaymentTerm })
+  };
+};
 
 module.exports = PaymentTerm;

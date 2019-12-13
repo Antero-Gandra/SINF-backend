@@ -2,7 +2,25 @@ const express = require("express");
 const { api } = require("../utils/endpoints");
 const pool = require("../database");
 const { requestToken } = require("../utils/token");
-const { routeMap, validate } = require("../models");
+const { joiRouteMap, validate } = require("../models");
+const {
+  Country,
+  Currency,
+  CustomerParty,
+  Item,
+  ItemTaxSchema,
+  Party,
+  PartyTaxSchema,
+  PaymentMethod,
+  PaymentTerm,
+  PurchaseInvoice,
+  PurchaseItem,
+  PurchaseOrder,
+  SalesInvoice,
+  SalesItem,
+  SalesOrder,
+  SupplierParty
+} = require("../models/primavera");
 
 // test on A
 const tenant = process.env.A_TENANT;
@@ -22,12 +40,12 @@ router.get("/get/*", function(req, res, next) {
 });
 
 /**
- * Send a GET request to any Primavera endpoints with any query parameters.
- * Validate the results against the Joi models.
+ * Send a GET request to any Primavera endpoint with any query parameters.
+ * Validate the results against the Joi schemas.
  */
 router.get("/joi/*", function(req, res, next) {
   const url = req.params[0];
-  const validator = routeMap["/" + url];
+  const validator = joiRouteMap["/" + url];
   if (!validator) {
     return res.send("Invalid URL: " + url);
   }
@@ -40,17 +58,17 @@ router.get("/joi/*", function(req, res, next) {
 });
 
 /**
- * Validate all endpoints against the Joi models.
+ * Validate all endpoints against the Joi schemas.
  */
 router.get("/check", function(req, res, next) {
-  const promises = Object.keys(routeMap).map(url =>
+  const promises = Object.keys(joiRouteMap).map(url =>
     api
       .get(`/${tenant}/${organization}${url}`, {
         params: { $inlinecount: "allpages", ...req.query }
       })
       .then(response => ({
         url,
-        ...validate(routeMap[url], response)
+        ...validate(joiRouteMap[url], response)
       }))
       .catch(err => console.log(err))
   );
@@ -62,6 +80,24 @@ router.get("/check", function(req, res, next) {
       })
     )
     .catch(next);
+});
+
+/**
+ * Test Primavera models.
+ */
+router.get("/models", async function(req, res, next) {
+  const sub = { tenant, organization };
+
+  try {
+    const country = await Country(sub).get("AM");
+    const currency = await Currency(sub).get("EUR");
+    const customerParty = await CustomerParty(sub).get("ALCAD");
+    const item = await Item(sub).get("PORTES");
+    const itemTaxSchema = await ItemTaxSchema(sub).get("IVA-TI");
+    res.send({ country, currency, customerParty, item, itemTaxSchema });
+  } catch (error) {
+    res.send({ error });
+  }
 });
 
 router.get("/post/sales/orders", function(req, res, next) {

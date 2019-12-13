@@ -2,20 +2,29 @@ const db = require("../../database");
 const Result = require("./result");
 
 const Brand = {
-  async all() {
-    return db.query("SELECT * FROM brand").then(Result.many);
-  },
-
+  // Get brand with the given id. Remember to check authorization.
   async get(brand_id) {
     return db
       .query(
-        `SELECT * FROM brand
-       WHERE brand_id = $1`,
+        `SELECT * FROM supplier_brand
+         WHERE brand_id = $1`,
         [brand_id]
       )
       .then(Result.one);
   },
 
+  // Find brand with the given UUID. Remember to check authorization.
+  async find(brand_uuid) {
+    return db
+      .query(
+        `SELECT * FROM supplier_brand
+         WHERE brand_uuid = $1`,
+        [brand_uuid]
+      )
+      .then(Result.one);
+  },
+
+  // Find all brands from the given supplier.
   async allSupplier(supplier_id) {
     return db
       .query(
@@ -26,6 +35,7 @@ const Brand = {
       .then(Result.many);
   },
 
+  // Create a new brand for the given supplier and brand UUID.
   async create({ supplier_id, brand_uuid }) {
     return db
       .query(
@@ -37,6 +47,7 @@ const Brand = {
       .then(Result.one);
   },
 
+  // Delete the given brand. Authorization is assumed.
   async delete(brand_id) {
     return db
       .query(

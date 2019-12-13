@@ -37,7 +37,7 @@ CREATE TABLE "user"(
   tenant                    VARCHAR(20) NOT NULL,
   organization              VARCHAR(20) NOT NULL,
   user_kind                 TECHSINF_ROLE NOT NULL,
-  company_uuid              UUID NOT NULL, -- PRIMAVERA USER
+  company_uuid              UUID NOT NULL, -- PRIMAVERA USER (PRIVATE)
   user_createdat            PAST_TIMESTAMP,
 
   CONSTRAINT UserNaturalKey UNIQUE(tenant, organization, user_kind),
@@ -109,7 +109,7 @@ CREATE TABLE sp_item(
   customer_item_uuid        UUID NOT NULL, -- PRIMAVERA CUSTOMER (PRIVATE)
   sp_item_createdat         PAST_TIMESTAMP,
 
-  CONSTRAINT SPItemNaturalKey UNIQUE(supplier_item_uuid, customer_item_uuid),
+  CONSTRAINT SPItemNaturalKey UNIQUE(customer_item_uuid),
 
   FOREIGN KEY(subscription_id) REFERENCES
     subscription(subscription_id) ON DELETE CASCADE

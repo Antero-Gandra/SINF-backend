@@ -1,16 +1,13 @@
-const Joi = require("@hapi/joi");
-const { } = require("./common");
+const JoiPartyTaxSchema = require("./joi/PartyTaxSchema");
+const common = require("./common");
 
-/**
- * Validator for required fields of resource PartyTaxSchemaResource
- * GET /taxesCore/partyTaxSchemas
- */
-const PartyTaxSchema = Joi.object({
-  id: Joi.string().uuid(),
-  taxCodeGroupKey: Joi.string(), // PRIMARY KEY PartyTaxSchema
-  description: Joi.string().optional().empty(null).empty('').default(''),
+// https://jasminsoftware.github.io/taxescore.partytaxschemas.html
+const PartyTaxSchema = ({ tenant, organization }) => {
+  const url = `/${tenant}/${organization}/taxesCore/partyTaxSchemas`;
 
-  // ...
-}).required().options({ presence: "required" }).unknown(true);
+  return {
+    ...common({ url, schema: JoiPartyTaxSchema })
+  };
+};
 
 module.exports = PartyTaxSchema;

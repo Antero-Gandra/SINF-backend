@@ -45,6 +45,9 @@ BEGIN
 
   INSERT INTO customer(customer_id) VALUES (myuserid);
 
+  SELECT (SELECT CENAS FROM CENAS) as a1, (SELECT CENAS FROM CENAS) as a2 INTO NEW
+  FROM tabela WHERE id = 1;
+
   SELECT * INTO NEW FROM customer_user
   WHERE customer_id = myuserid;
 

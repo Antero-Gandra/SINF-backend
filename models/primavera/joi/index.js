@@ -1,4 +1,6 @@
 module.exports = {
+  Joi: require("@hapi/joi"),
+
   // * /corePatterns
   Country: require("./Country"),
   Currency: require("./Currency"),
@@ -17,13 +19,17 @@ module.exports = {
 
   // * /purchases  &  /purchasesCore
   PurchaseInvoice: require("./PurchaseInvoice"),
+  PurchaseInvoiceLine: require("./PurchaseInvoiceLine"),
   PurchaseItem: require("./PurchaseItem"),
   PurchaseOrder: require("./PurchaseOrder"),
+  PurchaseOrderLine: require("./PurchaseOrderLine"),
   SupplierParty: require("./SupplierParty"),
 
   // * /sales & /salesCore
   SalesInvoice: require("./SalesInvoice"),
+  SalesInvoiceLine: require("./SalesInvoiceLine"),
   SalesItem: require("./SalesItem"),
   SalesOrder: require("./SalesOrder"),
-  CustomerParty: require("./CustomerParty")
+  SalesOrderLine: require("./SalesOrderLine"),
+  CustomerParty: require("./CustomerParty"),
 };

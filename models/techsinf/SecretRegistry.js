@@ -2,6 +2,7 @@ const db = require("../../database");
 const Result = require("./result");
 
 const SecretRegistry = {
+  // Get the registry for the given secret_key. Remember to check the returned brand.
   async get(secret_key) {
     return db
       .query(
@@ -12,6 +13,7 @@ const SecretRegistry = {
       .then(Result.one);
   },
 
+  // Generate a new secret key for the given brand.
   async generate({ brand_id }) {
     return db
       .query(
@@ -22,6 +24,7 @@ const SecretRegistry = {
       .then(Result.one);
   },
 
+  // Delete the given secret key.
   async delete(secret_key) {
     return db
       .query(

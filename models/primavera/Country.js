@@ -1,20 +1,13 @@
-const Joi = require("@hapi/joi");
-const { } = require("./common");
+const JoiCountry = require("./joi/Country");
+const common = require("./common");
 
-/**
- * Validator for required fields of CountryResource
- * GET /corePatterns/countries
- */
-const Country = Joi.object({
-  id: Joi.string().uuid(),
-  countryKey: Joi.string(), // PRIMARY KEY Country
+// https://jasminsoftware.github.io/corepatterns.countries.html
+const Country = ({ tenant, organization }) => {
+  const url = `/${tenant}/${organization}/corePatterns/countries`;
 
-  culture: Joi.string(), // Culture
-  cultureId: Joi.string().uuid(),
-
-  name: Joi.string(),
-  eU: Joi.boolean(), // is EU member
-  isExternallyManaged: Joi.boolean(),
-}).required().options({ presence: "required" }).unknown(true);
+  return {
+    ...common({ url, schema: JoiCountry, name: "Country" })
+  };
+};
 
 module.exports = Country;

@@ -27,6 +27,22 @@ const check = ({ schema, url }) => {
         }
       }
       return data;
+    },
+
+    empty(response) {
+      // Various acceptable cases
+      if (response.data === null || response.data === undefined) {
+        return response;
+      }
+      const type = typeof response.data;
+      if (type === "string" && response.data === "") {
+        return response;
+      }
+      if (type === "object" && Object.keys(response.data).length === 0) {
+        return response;
+      }
+      console.error("Expected empty response but found:\n", response.data);
+      return response;
     }
   };
 };
@@ -36,6 +52,7 @@ const common = ({ url, schema }) => {
 
   return {
     url,
+    schema,
 
     async get(id) {
       return api
@@ -55,7 +72,7 @@ const common = ({ url, schema }) => {
         .then(expect.many);
     },
 
-    async query(params) {
+    async odata(params) {
       return api
         .get(`${url}/odata`, { params })
         .then(response => response.data.items)
@@ -67,14 +84,11 @@ const common = ({ url, schema }) => {
     },
 
     async update(id, field, data) {
-      return api.put(`${url}/${id}/${field}`, data);
+      return api.put(`${url}/${id}/${field}`, data).then(expect.empty);
     },
 
     async delete(id) {
-      return api
-        .delete(`${url}/${id}`)
-        .then(response => response.data)
-        .then(expect.one);
+      return api.delete(`${url}/${id}`).then(expect.empty);
     }
   };
 };

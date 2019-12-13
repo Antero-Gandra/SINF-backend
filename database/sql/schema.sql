@@ -122,8 +122,22 @@ CREATE TABLE orders(
   order_id                  SERIAL PRIMARY KEY,
   subscription_id           INTEGER NOT NULL,
   stage                     ORDER_STAGE NOT NULL,
+  purchase_order_uuid       UUID NOT NULL, -- PRIMAVERA CUSTOMER (PRIVATE)
+  sales_order_uuid          UUID NULL,
   order_createdat           PAST_TIMESTAMP,
 
   FOREIGN KEY(subscription_id) REFERENCES
     subscription(subscription_id) ON DELETE CASCADE
+);
+
+-- All invoices processed through the system. Each belongs to an order.
+CREATE TABLE invoice(
+  invoice_id                SERIAL PRIMARY KEY,
+  order_id                  INTEGER NOT NULL,
+  purchase_invoice_uuid     UUID NULL,     -- PRIMAVERA CUSTOMER (PRIVATE)
+  sales_invoice_uuid        UUID NOT NULL, -- PRIMAVERA SUPPLIER (PRIVATE)
+  invoice_createdat         PAST_TIMESTAMP,
+
+  FOREIGN KEY(order_id) REFERENCES
+    orders(order_id) ON DELETE CASCADE
 );

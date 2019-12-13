@@ -3,7 +3,6 @@
 -----------------------------------------------------------
 
 -- [CREATE SUPPLIER] INSTEAD OF INSERT ON supplier_user
-DROP FUNCTION IF EXISTS create_user_row_supplier_procedure() CASCADE;
 CREATE FUNCTION create_user_row_supplier_procedure()
 RETURNS trigger AS
 $$
@@ -31,7 +30,6 @@ FOR EACH ROW
 EXECUTE PROCEDURE create_user_row_supplier_procedure();
 
 -- [CREATE CUSTOMER] INSTEAD OF INSERT ON customer_user
-DROP FUNCTION IF EXISTS create_user_row_customer_procedure() CASCADE;
 CREATE FUNCTION create_user_row_customer_procedure()
 RETURNS trigger AS
 $$
@@ -44,9 +42,6 @@ BEGIN
   RETURNING user_id INTO myuserid;
 
   INSERT INTO customer(customer_id) VALUES (myuserid);
-
-  --SELECT (SELECT CENAS FROM CENAS) as a1, (SELECT CENAS FROM CENAS) as a2 INTO NEW
-  --FROM tabela WHERE id = 1;
 
   SELECT * INTO NEW FROM customer_user
   WHERE customer_id = myuserid;
@@ -62,7 +57,6 @@ FOR EACH ROW
 EXECUTE PROCEDURE create_user_row_customer_procedure();
 
 -- [DELETE SUPPLIER] INSTEAD OF DELETE ON supplier_user
-DROP FUNCTION IF EXISTS delete_user_row_supplier_procedure() CASCADE;
 CREATE FUNCTION delete_user_row_supplier_procedure()
 RETURNS trigger AS
 $$
@@ -80,7 +74,6 @@ FOR EACH ROW
 EXECUTE PROCEDURE delete_user_row_supplier_procedure();
 
 -- [DELETE SUPPLIER] INSTEAD OF DELETE ON customer_user
-DROP FUNCTION IF EXISTS delete_user_row_customer_procedure() CASCADE;
 CREATE FUNCTION delete_user_row_customer_procedure()
 RETURNS trigger AS
 $$

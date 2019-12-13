@@ -121,7 +121,7 @@ CREATE TABLE sp_item(
 CREATE TABLE orders(
   order_id                  SERIAL PRIMARY KEY,
   subscription_id           INTEGER NOT NULL,
-  stage                     ORDER_STAGE NOT NULL,
+  stage                     ORDER_STAGE NOT NULL DEFAULT 'PURCHASE_ORDER',
   purchase_order_uuid       UUID NOT NULL, -- PRIMAVERA CUSTOMER (PRIVATE)
   sales_order_uuid          UUID NULL,
   order_createdat           PAST_TIMESTAMP,

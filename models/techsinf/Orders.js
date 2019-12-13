@@ -37,6 +37,7 @@ const Orders = {
 
   // Create new order from a purchase order
   async create({ subscription_id, purchase_order_uuid }) {
+    console.log("Model");
     return db
       .query(
         `INSERT INTO orders(subscription_id,

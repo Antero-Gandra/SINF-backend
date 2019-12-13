@@ -2,6 +2,7 @@ const express = require("express");
 const { api } = require("../utils/endpoints");
 const { requestToken } = require("../utils/token");
 const { joiRouteMap, validate } = require("../models/primavera/joi/validator");
+const pool = require("../database");
 const {
   Country,
   Currency,
@@ -9,7 +10,7 @@ const {
   Item,
   ItemTaxSchema
 } = require("../models/primavera");
-const { Customer, Supplier } = require("../models/techsinf");
+const { Customer, Supplier, Orders } = require("../models/techsinf");
 
 // test on A
 const tenant = process.env.A_TENANT;
@@ -48,17 +49,52 @@ router.get("/db/customer/delete", async function(req, res, next) {
   return res.send({ message: "Deleted if count>0", count, customer });
 });
 
+/**
+ * Database SELECT
+ */
+router.get("/db/test", function(req, res, next) {
+  pool.query("SELECT * FROM orders", (err, results) => {
+    if (err) throw err;
+    const { rows, rowCount } = results;
+    res.status(200).json({ rows, rowCount });
+  });
+});
+
 router.get("/sync/customer", function(req, res, next) {
-  api
-    .get(`/${tenant}/${organization}/purchases/orders`)
-    .then(response => res.send(response.data))
-    .catch(error => res.send(error));
+
+  let orders
 
   api
+    .get(`/${tenant}/${organization}/purchases/orders`)
+    .then(response => storeOrders(response.data))
+    .catch(error => res.send(error));
+
+  /*api
     .get(`/${tenant}/${organization}/purchasesCore/purchasesItems`)
     .then(response => res.send(response.data))
-    .catch(error => res.send(error));
+    .catch(error => res.send(error));*/
 });
+
+const storeOrders = (orders) =>
+{
+  let subscription_id = '1';
+  console.log(orders.length);
+  for(let id in orders)
+  {
+    let purchase_order_uuid = orders[id].id.replace(/-/g, "");;
+    console.log(purchase_order_uuid);
+    Orders.create({ subscription_id, purchase_order_uuid: purchase_order_uuid })
+      .then(response => {
+        console.log("Funfou");
+        console.log(response);
+      })
+      .catch(error => {
+        console.log("entering catch");
+        res.send(error);
+      });
+      console.log("Saiu")
+  }
+}
 
 router.get("/sync/supplier", function(req, res, next) {
   api

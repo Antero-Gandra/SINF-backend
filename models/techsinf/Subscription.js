@@ -22,8 +22,9 @@ const Subscription = {
   async allSupplier(supplier_id) {
     return db
       .query(
-        `SELECT * FROM supplier_subscription
-         WHERE supplier_id = $1`,
+        `SELECT * FROM supplier_subscription, "user"
+         WHERE supplier_id = $1
+         AND "user".user_id = supplier_subscription.customer_id`,
         [supplier_id]
       )
       .then(Result.many);
@@ -33,8 +34,9 @@ const Subscription = {
   async allCustomer(customer_id) {
     return db
       .query(
-        `SELECT * FROM customer_subscription
-         WHERE customer_id = $1`,
+        `SELECT * FROM customer_subscription, "user"
+         WHERE customer_id = $1
+         AND "user".user_id = customer_subscription.supplier_id`,
         [customer_id]
       )
       .then(Result.many);

@@ -18,8 +18,16 @@ router.get("/get/all/customer", function(req, res, next) {
 });
 
 router.get("/get/all/supplier", function(req, res, next) {
-    Subscription.allSupplier(req.query.supplierId).then(response => {
-        res.send(response);
+    let tenant = req.query.tenant;
+    let organization = req.query.organization;
+    let company_uuid = req.query.company;
+    
+    Supplier.find({ tenant, organization, company_uuid }).then(response =>{
+        let userId = response.supplier_id;
+
+        Subscription.allSupplier(userId).then(response => {
+            res.send(response);
+        })
     })
 });
 

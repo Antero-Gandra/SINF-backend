@@ -2,6 +2,7 @@ const express = require("express");
 const { api } = require("../utils/endpoints");
 const { requestToken } = require("../utils/token");
 const { joiRouteMap, validate } = require("../models/primavera/joi/validator");
+const pool = require("../database");
 const {
   Country,
   Currency,
@@ -9,7 +10,7 @@ const {
   Item,
   ItemTaxSchema
 } = require("../models/primavera");
-const { Customer, Supplier } = require("../models/techsinf");
+const { Customer, Supplier, Orders } = require("../models/techsinf");
 
 // test on A
 const tenant = process.env.A_TENANT;
@@ -17,7 +18,7 @@ const organization = process.env.A_ORGANIZATION;
 
 const router = express.Router();
 
-router.get("/sync/customer", function(req, res, next) {
+/*router.get("/sync/customer", function(req, res, next) {
   api
     .get(`/${tenant}/${organization}/purchases/orders`)
     .then(response => res.send(response.data))
@@ -39,7 +40,7 @@ router.get("/sync/supplier", function(req, res, next) {
     .get(`/${tenant}/${organization}/salescore/salesitems`)
     .then(response => res.send(response.data))
     .catch(error => res.send(error));
-});
+});*/
 
 router.get("/session/check", function(req, res, next) {
   if (req.session.counter == null) req.session.counter = 0;
@@ -76,6 +77,66 @@ router.get("/db/customer/delete", async function(req, res, next) {
   if (customer == null) return res.send({ message: "not found" });
   const count = await Customer.delete(customer.customer_id);
   return res.send({ message: "Deleted if count>0", count, customer });
+});
+
+/**
+ * Database SELECT
+ */
+router.get("/db/test", function(req, res, next) {
+  pool.query("SELECT * FROM orders", (err, results) => {
+    if (err) throw err;
+    const { rows, rowCount } = results;
+    res.status(200).json({ rows, rowCount });
+  });
+}); 
+
+router.get("/sync/customer", function(req, res, next) {
+
+  let orders
+
+  api
+    .get(`/${tenant}/${organization}/purchases/orders`)
+    .then(response => storeOrders(response.data))
+    .catch(error => res.send(error));
+
+  /*api
+    .get(`/${tenant}/${organization}/purchasesCore/purchasesItems`)
+    .then(response => res.send(response.data))
+    .catch(error => res.send(error));*/
+});
+
+const storeOrders = (orders) =>
+{
+  let subscription_id = '1';
+  for(let id in orders)
+  {
+    let purchase_order_uuid = orders[id].id.replace(/-/g, "");
+    Orders.find(purchase_order_uuid)
+    .then(response => {
+        if(response === null) {
+          Orders.create({ subscription_id, purchase_order_uuid: purchase_order_uuid })
+            .then(response) 
+            .catch(error => {
+              console.log(error);
+            });
+        }
+    })
+    .catch(error => {
+      console.log(error);
+    })
+  }
+}
+
+router.get("/sync/supplier", function(req, res, next) {
+  api
+    .get(`/${tenant}/${organization}/billing/invoices/`)
+    .then(response => res.send(response.data))
+    .catch(error => res.send(error));
+
+  /*api
+    .get(`/${tenant}/${organization}/salescore/salesitems`)
+    .then(response => res.send(response.data))
+    .catch(error => res.send(error));*/
 });
 
 /**

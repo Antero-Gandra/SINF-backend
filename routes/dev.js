@@ -18,30 +18,6 @@ const organization = process.env.A_ORGANIZATION;
 
 const router = express.Router();
 
-/*router.get("/sync/customer", function(req, res, next) {
-  api
-    .get(`/${tenant}/${organization}/purchases/orders`)
-    .then(response => res.send(response.data))
-    .catch(error => res.send(error));
-
-  api
-    .get(`/${tenant}/${organization}/purchasesCore/purchasesItems`)
-    .then(response => res.send(response.data))
-    .catch(error => res.send(error));
-});
-
-router.get("/sync/supplier", function(req, res, next) {
-  api
-    .get(`/${tenant}/${organization}/billing/invoices/`)
-    .then(response => res.send(response.data))
-    .catch(error => res.send(error));
-
-  api
-    .get(`/${tenant}/${organization}/salescore/salesitems`)
-    .then(response => res.send(response.data))
-    .catch(error => res.send(error));
-});*/
-
 router.get("/session/check", function(req, res, next) {
   if (req.session.counter == null) req.session.counter = 0;
   req.session.counter++;
@@ -92,7 +68,7 @@ router.get("/db/test", function(req, res, next) {
 
 router.get("/sync/customer", function(req, res, next) {
   (api
-    .get(`/${tenant}/${organization}/purchases/orders`)
+    .get(`/${req.query.tenant}/${req.query.organization}/purchases/orders`)
     .then(response => storeOrders(response.data, res))
     .catch(error => res.send(error))).then(getAllOrdersCustomer(res));
 
@@ -156,7 +132,7 @@ const storeOrders = (orders, res) =>
 
 router.get("/sync/supplier", function(req, res, next) {
   (api
-    .get(`/${tenant}/${organization}/billing/invoices`)
+    .get(`/${req.query.tenant}/${req.query.organization}/billing/invoices`)
     .then(response => {storeInvoices(response.data)})
     .catch(error => res.send(error))).then(getAllOrdersSupplier(res));
 

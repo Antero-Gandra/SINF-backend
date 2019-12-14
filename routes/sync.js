@@ -6,6 +6,17 @@ const {
     Invoices
 } = require("../models/techsinf");
 
+
+
+
+
+
+//NOT BEING USED 
+
+
+
+
+
 router.get("/sync/customer", function(req, res, next) {
 
     let orders

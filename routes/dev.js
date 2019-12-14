@@ -41,12 +41,10 @@ router.get("/sync/supplier", function(req, res, next) {
     .catch(error => res.send(error));
 });
 
-router.get("/session/increment", function(req, res, next) {
-  //
-});
-
-router.get("/session/decrement", function(req, res, next) {
-  //
+router.get("/session/check", function(req, res, next) {
+  if (req.session.counter == null) req.session.counter = 0;
+  req.session.counter++;
+  res.send({ session: req.session });
 });
 
 /**

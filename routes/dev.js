@@ -18,7 +18,7 @@ const organization = process.env.A_ORGANIZATION;
 
 const router = express.Router();
 
-router.get("/sync/customer", function(req, res, next) {
+/*router.get("/sync/customer", function(req, res, next) {
   api
     .get(`/${tenant}/${organization}/purchases/orders`)
     .then(response => res.send(response.data))
@@ -40,7 +40,7 @@ router.get("/sync/supplier", function(req, res, next) {
     .get(`/${tenant}/${organization}/salescore/salesitems`)
     .then(response => res.send(response.data))
     .catch(error => res.send(error));
-});
+});*/
 
 router.get("/session/check", function(req, res, next) {
   if (req.session.counter == null) req.session.counter = 0;
@@ -88,7 +88,7 @@ router.get("/db/test", function(req, res, next) {
     const { rows, rowCount } = results;
     res.status(200).json({ rows, rowCount });
   });
-});
+}); 
 
 router.get("/sync/customer", function(req, res, next) {
 
@@ -108,21 +108,16 @@ router.get("/sync/customer", function(req, res, next) {
 const storeOrders = (orders) =>
 {
   let subscription_id = '1';
-  console.log(orders.length);
   for(let id in orders)
   {
     let purchase_order_uuid = orders[id].id.replace(/-/g, "");;
-    console.log(purchase_order_uuid);
     Orders.create({ subscription_id, purchase_order_uuid: purchase_order_uuid })
       .then(response => {
-        console.log("Funfou");
         console.log(response);
       })
       .catch(error => {
-        console.log("entering catch");
-        res.send(error);
+        console.log(error);
       });
-      console.log("Saiu")
   }
 }
 
@@ -132,10 +127,10 @@ router.get("/sync/supplier", function(req, res, next) {
     .then(response => res.send(response.data))
     .catch(error => res.send(error));
 
-  api
+  /*api
     .get(`/${tenant}/${organization}/salescore/salesitems`)
     .then(response => res.send(response.data))
-    .catch(error => res.send(error));
+    .catch(error => res.send(error));*/
 });
 
 /**

@@ -6,6 +6,7 @@ module.exports = {
   Currency: require("./Currency"),
 
   // * /businessCore
+  Brand: require("./Brand"),
   Item: require("./Item"),
   Party: require("./Party"),
 

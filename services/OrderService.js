@@ -1,7 +1,7 @@
+const APISalesOrder = require("../models/primavera/SalesOrder");
+const APIPurchaseOrder = require("../models/primavera/PurchaseOrder");
 const Orders = require("../models/techsinf/Orders");
 const SPItem = require("../models/techsinf/SPItem");
-const SalesOrder = require("../models/primavera/SalesOrder");
-const PurchaseOrder = require("../models/primavera/PurchaseOrder");
 
 const ORDER_NOT_FOUND = "The order does not exist";
 const ORDER_ACCEPTED_OR_REJECTED =
@@ -39,7 +39,7 @@ const OrderService = {
       return { error: ORDER_ACCEPTED_OR_REJECTED, status: 400 };
     }
 
-    const purchaseOrder = await PurchaseOrder.get(order.purchase_order_uuid);
+    const purchaseOrder = await APIPurchaseOrder.get(order.purchase_order_uuid);
     if (!purchaseOrder) {
       Orders.delete(order_id);
       return { error: WITHDRAWN_PURCHASE_ORDER, status: 404 };
@@ -67,7 +67,7 @@ const OrderService = {
       }))
     };
 
-    const uuid = await SalesOrder(supplier).create(salesOrder);
+    const uuid = await APISalesOrder(supplier).create(salesOrder);
     if (!uuid) {
       return { error: FAILED_CREATE_SALES_ORDER, status: 500 };
     }

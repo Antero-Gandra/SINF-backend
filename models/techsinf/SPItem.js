@@ -59,29 +59,37 @@ const SPItem = {
 
   // Return an object map with the matching sales items for the given purchase items
   async mapSalesItems({ subscription_id, purchases_items_uuids }) {
-    const rows = await db
+    return db
       .query(
         `SELECT * FROM subscription_brand_sp_item
          WHERE subscription_id = $1 AND purchase_item_uuid = ANY ($2)`,
         [subscription_id, purchases_items_uuids]
       )
-      .then(Result.many);
-    const map = {};
-    for (row in rows) map[row.purchase_item_uuid] = row;
-    return map;
+      .then(Result.many)
+      .then(makeMapPurchaseItems);
   },
 
   // Return an object map with the matching purchase items for the given sales items
   async mapPurchasesItems({ subscription_id, sales_items_uuids }) {
-    const rows = await db
+    return db
       .query(
         `SELECT * FROM subscription_brand_sp_item
          WHERE subscription_id = $1 AND sales_item_uuid = ANY ($2)`,
         [subscription_id, sales_items_uuids]
       )
-      .then(Result.many);
+      .then(Result.many)
+      .then(makeMapSalesItems);
+  },
+
+  makeMapPurchaseItems(rows) {
     const map = {};
-    for (row in rows) map[row.sales_item_uuids] = row;
+    for (row in rows) map[row.purchase_item_uuid] = row;
+    return map;
+  },
+
+  makeMapSalesItems(rows) {
+    const map = {};
+    for (row in rows) map[row.sales_item_uuid] = row;
     return map;
   }
 };

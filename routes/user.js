@@ -1,4 +1,5 @@
 const express = require("express");
+const { api } = require("../utils/endpoints");
 const router = express.Router();
 const { Customer, Supplier } = require("../models/techsinf");
 
@@ -9,20 +10,25 @@ router.post("/customer/add", function(req, res, next) {
 
   Customer.find({ tenant, organization, company_uuid })
     .then(response => {
+      console.log("found");
       if (response === null) {
-        Customer.create({ tenant, organization, company_uuid: company_uuid })
-          .then(response => {
-            console.log("success, created new user");
-            console.log(response);
-            res.send(response);
-          })
-          .catch(error => {
-            console.log("create error");
-            res.send(error);
-          });
-      } else {
+        console.log("success, created new user");
+            api
+            .get(`/${tenant}/${organization}/corepatterns/companies/${company_uuid}`)
+            .then(response =>         
+              {
+                Customer.create({ tenant, organization, company_uuid: company_uuid })
+                res.send({message: "Register successful"});
+              })
+            .catch(error => 
+              {
+                console.log(error);
+                res.send(error);
+              });
+      }
+      else {
         console.log("success, found existing user");
-        res.send({ body:"User already created .." });
+        res.send({message: "Login successful"});
       }
     })
     .catch(error => {
@@ -38,20 +44,25 @@ router.post("/supplier/add", function(req, res, next) {
 
   Supplier.find({ tenant, organization, company_uuid })
   .then(response => {
+    console.log("found");
     if (response === null) {
-      Supplier.create({ tenant, organization, company_uuid: company_uuid })
-        .then(response => {
-          console.log("success, created new user");
-          console.log(response);
-          res.send(response);
-        })
-        .catch(error => {
-          console.log("create error");
-          res.send(error);
-        });
-    } else {
+      console.log("success, created new user");
+          api
+          .get(`/${tenant}/${organization}/corepatterns/companies/${company_uuid}`)
+          .then(response =>         
+            {
+              Supplier.create({ tenant, organization, company_uuid: company_uuid })
+              res.send({message: "Register successful"});
+            })
+          .catch(error => 
+            {
+              console.log(error);
+              res.send(error);
+            });
+    }
+    else {
       console.log("success, found existing user");
-      res.send({ body:"User already created .." });
+      res.send({message: "Login successful"});
     }
   })
   .catch(error => {

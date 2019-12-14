@@ -131,10 +131,15 @@ const storeOrders = (orders, res) =>
 }
 
 router.get("/sync/supplier", function(req, res, next) {
+  //(api
+  //  .get(`/${req.query.tenant}/${req.query.organization}/billing/invoices`)
+  //  .then(response => {storeInvoices(response.data)})
+  //  .catch(error => res.send(error)));//.then(getAllOrdersSupplier(res));
+
   (api
-    .get(`/${req.query.tenant}/${req.query.organization}/billing/invoices`)
-    .then(response => {storeInvoices(response.data)})
-    .catch(error => res.send(error))).then(getAllOrdersSupplier(res));
+    .get(`/${req.query.tenant}/${req.query.organization}/businesscore/brands`)
+    .then(response => storeBrands(response.data))
+    .catch(error => console.log(error)));
 
   /*api
     .get(`/${tenant}/${organization}/salescore/salesitems`)
@@ -152,9 +157,29 @@ const storeInvoices = (invoices) =>
      .then(response => {
          if(response === null) {
           Invoice.create({ order_id, sales_invoice_uuid: sales_invoice_uuid })
-            .then(response => {
-              console.log(response);
-            })
+            .then(response)
+            .catch(error => {
+              console.log(error);
+            });
+        }
+    })
+    .catch(error => {
+      console.log(error);
+    })
+  }
+}
+
+const storeBrands = (brands) =>
+{
+  let supplier_id = '2';
+  for(let id in brands)
+  {
+    let brand_uuid = brands[id].id.replace(/-/g, "");
+     Brand.find(brand_uuid)
+     .then(response => {
+         if(response === null) {
+          Brand.create({ supplier_id, brand_uuid: brand_uuid })
+            .then(response)
             .catch(error => {
               console.log(error);
             });

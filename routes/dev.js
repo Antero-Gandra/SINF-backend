@@ -17,6 +17,38 @@ const organization = process.env.A_ORGANIZATION;
 
 const router = express.Router();
 
+router.get("/sync/customer", function(req, res, next) {
+  api
+    .get(`/${tenant}/${organization}/purchases/orders`)
+    .then(response => res.send(response.data))
+    .catch(error => res.send(error));
+
+  api
+    .get(`/${tenant}/${organization}/purchasesCore/purchasesItems`)
+    .then(response => res.send(response.data))
+    .catch(error => res.send(error));
+});
+
+router.get("/sync/supplier", function(req, res, next) {
+  api
+    .get(`/${tenant}/${organization}/billing/invoices/`)
+    .then(response => res.send(response.data))
+    .catch(error => res.send(error));
+
+  api
+    .get(`/${tenant}/${organization}/salescore/salesitems`)
+    .then(response => res.send(response.data))
+    .catch(error => res.send(error));
+});
+
+router.get("/session/increment", function(req, res, next) {
+  //
+});
+
+router.get("/session/decrement", function(req, res, next) {
+  //
+});
+
 /**
  * Send a GET request to any Primavera endpoint with any query parameters.
  */
@@ -46,30 +78,6 @@ router.get("/db/customer/delete", async function(req, res, next) {
   if (customer == null) return res.send({ message: "not found" });
   const count = await Customer.delete(customer.customer_id);
   return res.send({ message: "Deleted if count>0", count, customer });
-});
-
-router.get("/sync/customer", function(req, res, next) {
-  api
-    .get(`/${tenant}/${organization}/purchases/orders`)
-    .then(response => res.send(response.data))
-    .catch(error => res.send(error));
-
-  api
-    .get(`/${tenant}/${organization}/purchasesCore/purchasesItems`)
-    .then(response => res.send(response.data))
-    .catch(error => res.send(error));
-});
-
-router.get("/sync/supplier", function(req, res, next) {
-  api
-    .get(`/${tenant}/${organization}/billing/invoices/`)
-    .then(response => res.send(response.data))
-    .catch(error => res.send(error));
-
-  api
-    .get(`/${tenant}/${organization}/salescore/salesitems`)
-    .then(response => res.send(response.data))
-    .catch(error => res.send(error));
 });
 
 /**

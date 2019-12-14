@@ -10,7 +10,7 @@ const {
   Item,
   ItemTaxSchema
 } = require("../models/primavera");
-const { Customer, Supplier, Orders } = require("../models/techsinf");
+const { Customer, Supplier, Orders, Invoice } = require("../models/techsinf");
 
 // test on A
 const tenant = process.env.A_TENANT;
@@ -129,8 +129,8 @@ const storeOrders = (orders) =>
 
 router.get("/sync/supplier", function(req, res, next) {
   api
-    .get(`/${tenant}/${organization}/billing/invoices/`)
-    .then(response => res.send(response.data))
+    .get(`/${tenant}/${organization}/billing/invoices`)
+    .then(response => {storeInvoices(response.data)})
     .catch(error => res.send(error));
 
   /*api
@@ -138,6 +138,30 @@ router.get("/sync/supplier", function(req, res, next) {
     .then(response => res.send(response.data))
     .catch(error => res.send(error));*/
 });
+
+const storeInvoices = (invoices) =>
+{
+  let order_id = '1';
+  for(let id in invoices)
+  {
+    let sales_invoice_uuid = invoices[id].id.replace(/-/g, "");
+     Invoice.find(purchase_order_uuid)
+     .then(response => {
+         if(response === null) {
+          Invoice.create({ order_id, sales_invoice_uuid: sales_invoice_uuid })
+            .then(response => {
+              console.log(response);
+            })
+            .catch(error => {
+              console.log(error);
+            });
+        }
+    })
+    .catch(error => {
+      console.log(error);
+    })
+  }
+}
 
 /**
  * Send a GET request to any Primavera endpoint with any query parameters.

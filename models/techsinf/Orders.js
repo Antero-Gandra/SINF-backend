@@ -35,6 +35,30 @@ const Orders = {
       .then(Result.many);
   },
 
+  // Get all orders in general
+  async allOrdersCustomer() {
+    return db
+      .query(
+        `SELECT * FROM orders, subscription, brand, supplier, "user"
+        WHERE orders.subscription_id = subscription.subscription_id
+        AND subscription.brand_id = brand.brand_id
+        AND supplier.supplier_id = brand.supplier_id
+        AND supplier.supplier_id = "user".user_id`
+      )
+      .then(Result.many);
+  },
+
+  async allOrdersSupplier() {
+    return db
+      .query(
+        `SELECT * FROM orders, subscription, customer, "user"
+        WHERE orders.subscription_id = subscription.subscription_id
+        AND subscription.customer_id = customer.customer_id
+        AND customer.customer_id = "user".user_id`
+      )
+      .then(Result.many);
+  },
+
   // Create new order from a purchase order
   async create({ subscription_id, purchase_order_uuid }) {
     return db

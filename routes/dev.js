@@ -91,13 +91,10 @@ router.get("/db/test", function(req, res, next) {
 }); 
 
 router.get("/sync/customer", function(req, res, next) {
-
-  let orders
-
-  api
+  (api
     .get(`/${tenant}/${organization}/purchases/orders`)
-    .then(response => storeOrders(response.data))
-    .catch(error => res.send(error));
+    .then(response => storeOrders(response.data, res))
+    .catch(error => res.send(error))).then(getAllOrdersCustomer(res));
 
   /*api
     .get(`/${tenant}/${organization}/purchasesCore/purchasesItems`)
@@ -105,7 +102,27 @@ router.get("/sync/customer", function(req, res, next) {
     .catch(error => res.send(error));*/
 });
 
-const storeOrders = (orders) =>
+const getAllOrdersCustomer = (res) =>
+{
+  Orders.allOrdersCustomer()
+    .then(response => {
+      console.log(response);
+      res.send(response)
+    })
+    .catch(error => console.log(error));
+}
+
+const getAllOrdersSupplier = (res) =>
+{
+  Orders.allOrdersSupplier()
+    .then(response => {
+      console.log(response);
+      res.send(response)
+    })
+    .catch(error => console.log(error));
+}
+
+const storeOrders = (orders, res) =>
 {
   let subscription_id = '1';
   for(let id in orders)
@@ -115,23 +132,33 @@ const storeOrders = (orders) =>
     .then(response => {
         if(response === null) {
           Orders.create({ subscription_id, purchase_order_uuid: purchase_order_uuid })
-            .then(response) 
+            .then(response => {
+              console.log("Adding to database");
+              console.log(response);
+            }) 
             .catch(error => {
               console.log(error);
+              res.send(error);
             });
+        }
+
+        else {
+          console.log("Found existing order!");
+          console.log(response);
         }
     })
     .catch(error => {
       console.log(error);
+      res.send(error);
     })
   }
 }
 
 router.get("/sync/supplier", function(req, res, next) {
-  api
+  (api
     .get(`/${tenant}/${organization}/billing/invoices/`)
     .then(response => res.send(response.data))
-    .catch(error => res.send(error));
+    .catch(error => res.send(error))).then(getAllOrdersSupplier(res));
 
   /*api
     .get(`/${tenant}/${organization}/salescore/salesitems`)

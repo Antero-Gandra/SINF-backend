@@ -110,14 +110,20 @@ const storeOrders = (orders) =>
   let subscription_id = '1';
   for(let id in orders)
   {
-    let purchase_order_uuid = orders[id].id.replace(/-/g, "");;
-    Orders.create({ subscription_id, purchase_order_uuid: purchase_order_uuid })
-      .then(response => {
-        console.log(response);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    let purchase_order_uuid = orders[id].id.replace(/-/g, "");
+    Orders.find(purchase_order_uuid)
+    .then(response => {
+        if(response === null) {
+          Orders.create({ subscription_id, purchase_order_uuid: purchase_order_uuid })
+            .then(response) 
+            .catch(error => {
+              console.log(error);
+            });
+        }
+    })
+    .catch(error => {
+      console.log(error);
+    })
   }
 }
 

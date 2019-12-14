@@ -47,6 +47,17 @@ const Orders = {
       .then(Result.one);
   },
 
+  // Create new order from a purchase order
+  async find(purchase_order_uuid) {
+    return db
+      .query(
+        `SELECT * FROM orders
+         WHERE purchase_order_uuid = $1`,
+        [purchase_order_uuid]
+      )
+      .then(Result.one);
+  },
+
   // Reject a purchase order
   async reject(order_id) {
     return db

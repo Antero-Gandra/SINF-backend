@@ -28,7 +28,7 @@ const SalesItem = Joi.object({
   // lastPrice: AmountObject,
   // lastPriceAmount: Amount,
 
-  priceListLines: Joi.array().items(SalesPriceListLine).optional().allow(null),
+  priceListLines: Joi.array().items(SalesPriceListLine.optional()).optional(),
 }).required().options({ presence: "required" }).unknown(true);
 
 SalesItem.extended = Item.concat(SalesItem);

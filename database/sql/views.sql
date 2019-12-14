@@ -103,20 +103,6 @@ CREATE OR REPLACE VIEW subscription_brand_orders AS
 SELECT *
 FROM brand B
 NATURAL JOIN subscription S
-NATURAL JOIN orders O;
-
--- supplier JOIN brand JOIN subscription JOIN orders
-CREATE OR REPLACE VIEW supplier_subscription_order AS
-SELECT *
-FROM supplier_user SU
-NATURAL JOIN brand B
-NATURAL JOIN subscription S
-NATURAL JOIN orders O;
-
--- customer JOIN brand JOIN subscription JOIN orders
-CREATE OR REPLACE VIEW customer_subscription_order AS
-SELECT *
-FROM customer_user CU
-NATURAL JOIN subscription S
-NATURAL JOIN brand B
-NATURAL JOIN orders O;
+NATURAL JOIN orders O
+NATURAL JOIN supplier_user SU
+NATURAL JOIN customer_user CU;

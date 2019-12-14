@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const session = require("express-session");
 
 const express = require("express");
 
@@ -24,6 +25,16 @@ const corsOptions = {
   origin: "*",
   optionsSuccessStatus: 200
 };
+const sessionOptions = {
+  resave: false,
+  saveUninitialized: false,
+  secret: process.env.SESSION_SECRET,
+  cookie: {
+    secure: process.env.NODE_ENV !== "dev",
+    maxAge: 1000 * 60 * 60 * 2 // 2 hours
+  }
+  // store: connect-pg-simple
+};
 
 // setup html template engine + console logging for development
 app.set("view engine", "pug");
@@ -32,10 +43,11 @@ app.use(morgan("dev"));
 // builtin middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(helmet());
 app.use(express.static("public"));
 app.use(cookieParser());
 app.use(cors(corsOptions));
-app.use(helmet());
+app.use(session(sessionOptions));
 
 // routers
 

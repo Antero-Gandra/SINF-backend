@@ -18,6 +18,36 @@ const organization = process.env.A_ORGANIZATION;
 
 const router = express.Router();
 
+router.get("/sync/customer", function(req, res, next) {
+  api
+    .get(`/${tenant}/${organization}/purchases/orders`)
+    .then(response => res.send(response.data))
+    .catch(error => res.send(error));
+
+  api
+    .get(`/${tenant}/${organization}/purchasesCore/purchasesItems`)
+    .then(response => res.send(response.data))
+    .catch(error => res.send(error));
+});
+
+router.get("/sync/supplier", function(req, res, next) {
+  api
+    .get(`/${tenant}/${organization}/billing/invoices/`)
+    .then(response => res.send(response.data))
+    .catch(error => res.send(error));
+
+  api
+    .get(`/${tenant}/${organization}/salescore/salesitems`)
+    .then(response => res.send(response.data))
+    .catch(error => res.send(error));
+});
+
+router.get("/session/check", function(req, res, next) {
+  if (req.session.counter == null) req.session.counter = 0;
+  req.session.counter++;
+  res.send({ session: req.session });
+});
+
 /**
  * Send a GET request to any Primavera endpoint with any query parameters.
  */

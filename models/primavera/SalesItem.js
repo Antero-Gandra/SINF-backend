@@ -6,7 +6,7 @@ const SalesItem = ({ tenant, organization }) => {
   const url = `/${tenant}/${organization}/salesCore/salesItems`;
 
   return {
-    ...common({ url, schema: JoiSalesItem })
+    ...common({ url, schema: JoiSalesItem.extended })
   };
 };
 

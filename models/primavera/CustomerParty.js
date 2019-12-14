@@ -6,7 +6,7 @@ const CustomerParty = ({ tenant, organization }) => {
   const url = `/${tenant}/${organization}/salesCore/customerParties`;
 
   return {
-    ...common({ url, schema: JoiCustomerParty })
+    ...common({ url, schema: JoiCustomerParty.extended })
   };
 };
 

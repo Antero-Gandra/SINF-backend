@@ -169,10 +169,12 @@ const storeBrands = (brands) =>
   for(let id in brands)
   {
     let brand_uuid = brands[id].id.replace(/-/g, "");
+    let brand_name = brands[id].brandKey;
+
      Brand.find(brand_uuid)
      .then(response => {
          if(response === null) {
-          Brand.create({ supplier_id, brand_uuid: brand_uuid })
+          Brand.create({ supplier_id, brand_uuid: brand_uuid, brand_name })
             .then(response)
             .catch(error => {
               console.log(error);

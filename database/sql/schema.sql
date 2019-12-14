@@ -67,6 +67,7 @@ CREATE TABLE brand(
   brand_id                  SERIAL PRIMARY KEY,
   supplier_id               INTEGER NOT NULL,
   brand_uuid                UUID NOT NULL, -- PRIMAVERA SUPPLIER (PRIVATE)
+  brand_name                VAR_CHAR(40) NOT NULL,
   brand_createdat           PAST_TIMESTAMP,
 
   CONSTRAINT BrandUniqueInstance UNIQUE(brand_uuid),

@@ -71,7 +71,7 @@ const Orders = {
       .then(Result.one);
   },
 
-  // Create new order from a purchase order
+  // Find order with the given UUID. Remember to check authorization.
   async find(purchase_order_uuid) {
     return db
       .query(

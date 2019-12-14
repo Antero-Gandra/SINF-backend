@@ -38,7 +38,8 @@ NATURAL JOIN brand B;
 CREATE OR REPLACE VIEW customer_subscription AS
 SELECT *
 FROM customer_user CU
-NATURAL JOIN subscription S;
+NATURAL JOIN subscription S
+NATURAL JOIN brand B;
 
 -- customer JOIN subscription JOIN brand
 CREATE OR REPLACE VIEW customer_brand AS

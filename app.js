@@ -16,6 +16,7 @@ const devRouter = require("./routes/dev");
 const productsRouter = require("./routes/product");
 const userRouter = require("./routes/user");
 const syncRouter = require("./routes/sync");
+const subscriptionRouter = require("./routes/subscriptions");
 
 // setup endpoints and fetch access_token
 require("./utils/token");
@@ -56,6 +57,7 @@ app.use("/product", productsRouter);
 app.use("/dev", devRouter);
 app.use("/user", userRouter);
 app.use("/sync", syncRouter);
+app.use("/subscriptions", subscriptionRouter);
 
 app.use(function(err, req, res, next) {
   res.send(err);

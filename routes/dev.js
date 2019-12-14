@@ -82,7 +82,6 @@ const getAllOrdersCustomer = (res) =>
 {
   Orders.allOrdersCustomer()
     .then(response => {
-      console.log(response);
       res.send(response)
     })
     .catch(error => console.log(error));
@@ -110,7 +109,6 @@ const storeOrders = (orders, res) =>
           Orders.create({ subscription_id, purchase_order_uuid: purchase_order_uuid })
             .then(response => {
               console.log("Adding to database");
-              console.log(response);
             }) 
             .catch(error => {
               console.log(error);
@@ -119,8 +117,7 @@ const storeOrders = (orders, res) =>
         }
 
         else {
-          console.log("Found existing order!");
-          console.log(response);
+          //console.log("Found existing order!");
         }
     })
     .catch(error => {

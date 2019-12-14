@@ -10,7 +10,7 @@ const {
   Item,
   ItemTaxSchema
 } = require("../models/primavera");
-const { Customer, Supplier, Orders, Invoice } = require("../models/techsinf");
+const { Brand, Customer, Supplier, Orders, Invoice } = require("../models/techsinf");
 
 // test on A
 const tenant = process.env.A_TENANT;
@@ -91,10 +91,7 @@ const getAllOrdersCustomer = (res) =>
 const getAllOrdersSupplier = (res) =>
 {
   Orders.allOrdersSupplier()
-    .then(response => {
-      console.log(response);
-      res.send(response)
-    })
+    .then(response => {res.send(response)})
     .catch(error => console.log(error));
 }
 
@@ -131,10 +128,10 @@ const storeOrders = (orders, res) =>
 }
 
 router.get("/sync/supplier", function(req, res, next) {
-  //(api
-  //  .get(`/${req.query.tenant}/${req.query.organization}/billing/invoices`)
-  //  .then(response => {storeInvoices(response.data)})
-  //  .catch(error => res.send(error)));//.then(getAllOrdersSupplier(res));
+  (api
+    .get(`/${req.query.tenant}/${req.query.organization}/billing/invoices`)
+    .then(response => {storeInvoices(response.data)})
+    .catch(error => res.send(error))).then(getAllOrdersSupplier(res));
 
   (api
     .get(`/${req.query.tenant}/${req.query.organization}/businesscore/brands`)
@@ -153,7 +150,7 @@ const storeInvoices = (invoices) =>
   for(let id in invoices)
   {
     let sales_invoice_uuid = invoices[id].id.replace(/-/g, "");
-     Invoice.find(purchase_order_uuid)
+     Invoice.find(sales_invoice_uuid)
      .then(response => {
          if(response === null) {
           Invoice.create({ order_id, sales_invoice_uuid: sales_invoice_uuid })

@@ -9,8 +9,8 @@ $$
 DECLARE
   myuserid INTEGER;
 BEGIN
-  INSERT INTO "user"(tenant, organization, company_uuid, user_kind)
-  VALUES (NEW.supplier_tenant, NEW.supplier_organization, NEW.supplier_company_uuid,
+  INSERT INTO "user"(tenant, organization, company_uuid, company_name, user_kind)
+  VALUES (NEW.supplier_tenant, NEW.supplier_organization, NEW.supplier_company_uuid, NEW.supplier_company_name,
           'SUPPLIER')
   RETURNING user_id INTO myuserid;
 
@@ -36,8 +36,8 @@ $$
 DECLARE
   myuserid INTEGER;
 BEGIN
-  INSERT INTO "user"(tenant, organization, company_uuid, user_kind)
-  VALUES (NEW.customer_tenant, NEW.customer_organization, NEW.customer_company_uuid,
+  INSERT INTO "user"(tenant, organization, company_uuid, company_name, user_kind)
+  VALUES (NEW.customer_tenant, NEW.customer_organization, NEW.customer_company_uuid, NEW.customer_company_name, 
           'CUSTOMER')
   RETURNING user_id INTO myuserid;
 

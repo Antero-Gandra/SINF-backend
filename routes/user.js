@@ -6,18 +6,19 @@ const { Customer, Supplier } = require("../models/techsinf");
 router.post("/customer/add", function(req, res, next) {
   let tenant = req.body.tenant;
   let organization = req.body.organization;
-  let company_uuid = req.body.company;
+  let company_name = req.body.company;
 
-  Customer.find({ tenant, organization, company_uuid })
+  Customer.find({ tenant, organization, company_name })
     .then(response => {
       console.log("found");
       if (response === null) {
         console.log("success, created new user");
             api
-            .get(`/${tenant}/${organization}/corepatterns/companies/${company_uuid}`)
+            .get(`/${tenant}/${organization}/corepatterns/companies/${company_name}`)
             .then(response =>         
               {
-                Customer.create({ tenant, organization, company_uuid: company_uuid })
+                let company_uuid = response.data.id;
+                Customer.create({ tenant, organization, company_uuid: company_uuid, company_name })
                 res.send({message: "Register successful"});
               })
             .catch(error => 
@@ -40,18 +41,19 @@ router.post("/customer/add", function(req, res, next) {
 router.post("/supplier/add", function(req, res, next) {
   let tenant = req.body.tenant;
   let organization = req.body.organization;
-  let company_uuid = req.body.company;
+  let company_name = req.body.company;
 
-  Supplier.find({ tenant, organization, company_uuid })
+  Supplier.find({ tenant, organization, company_name })
   .then(response => {
     console.log("found");
     if (response === null) {
       console.log("success, created new user");
           api
-          .get(`/${tenant}/${organization}/corepatterns/companies/${company_uuid}`)
+          .get(`/${tenant}/${organization}/corepatterns/companies/${company_name}`)
           .then(response =>         
             {
-              Supplier.create({ tenant, organization, company_uuid: company_uuid })
+              let company_uuid = response.data.id;
+              Supplier.create({ tenant, organization, company_uuid: company_uuid, company_name })
               res.send({message: "Register successful"});
             })
           .catch(error => 

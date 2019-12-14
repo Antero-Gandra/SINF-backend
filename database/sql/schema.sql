@@ -38,6 +38,7 @@ CREATE TABLE "user"(
   organization              VARCHAR(20) NOT NULL,
   user_kind                 TECHSINF_ROLE NOT NULL,
   company_uuid              VARCHAR(40) NOT NULL, -- PRIMAVERA USER (PRIVATE)
+  company_name              VARCHAR(40) NOT NULL,
   user_createdat            PAST_TIMESTAMP,
 
   CONSTRAINT UserNaturalKey UNIQUE(tenant, organization, user_kind),
@@ -67,7 +68,7 @@ CREATE TABLE brand(
   brand_id                  SERIAL PRIMARY KEY,
   supplier_id               INTEGER NOT NULL,
   brand_uuid                UUID NOT NULL, -- PRIMAVERA SUPPLIER (PRIVATE)
-  brand_name                VAR_CHAR(40) NOT NULL,
+  brand_name                VARCHAR(40) NOT NULL,
   brand_createdat           PAST_TIMESTAMP,
 
   CONSTRAINT BrandUniqueInstance UNIQUE(brand_uuid),

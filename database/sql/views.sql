@@ -12,6 +12,7 @@ SELECT S.*,
   U.tenant AS supplier_tenant,
   U.organization AS supplier_organization,
   U.company_uuid AS supplier_company_uuid,
+  U.company_name AS supplier_company_name,
   U.user_createdat AS supplier_created_at
 FROM "user" U
 JOIN supplier S ON U.user_id = S.supplier_id;
@@ -22,6 +23,7 @@ SELECT C.*,
   U.tenant AS customer_tenant,
   U.organization AS customer_organization,
   U.company_uuid AS customer_company_uuid,
+  U.company_name AS customer_company_name,
   U.user_createdat AS customer_created_at
 FROM "user" U
 JOIN customer C ON U.user_id = C.customer_id;

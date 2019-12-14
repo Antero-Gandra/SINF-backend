@@ -9,12 +9,12 @@ router.post("/customer/add", function(req, res, next) {
 
   Customer.find({ tenant, organization, company_uuid })
     .then(response => {
-      console.log(response);
       if (response === null) {
         Customer.create({ tenant, organization, company_uuid: company_uuid })
           .then(response => {
             console.log("success, created new user");
             console.log(response);
+            res.send(response);
           })
           .catch(error => {
             console.log("create error");
@@ -43,6 +43,7 @@ router.post("/supplier/add", function(req, res, next) {
         .then(response => {
           console.log("success, created new user");
           console.log(response);
+          res.send(response);
         })
         .catch(error => {
           console.log("create error");

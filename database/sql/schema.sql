@@ -126,6 +126,7 @@ CREATE TABLE orders(
   stage                     ORDER_STAGE NOT NULL DEFAULT 'PURCHASE_ORDER',
   purchase_order_uuid       UUID NOT NULL, -- PRIMAVERA CUSTOMER (PRIVATE)
   sales_order_uuid          UUID NULL,
+  total                     REAL NOT NULL,
   order_createdat           PAST_TIMESTAMP,
 
   CONSTRAINT UniquePurchaseOrder UNIQUE(purchase_order_uuid),

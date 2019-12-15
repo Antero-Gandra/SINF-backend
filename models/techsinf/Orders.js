@@ -60,13 +60,14 @@ const Orders = {
   },
 
   // Create new order from a purchase order
-  async create({ subscription_id, purchase_order_uuid }) {
+  async create({ subscription_id, purchase_order_uuid, total }) {
     return db
       .query(
         `INSERT INTO orders(subscription_id,
-                            purchase_order_uuid)
-         VALUES ($1, $2) RETURNING *`,
-        [subscription_id, purchase_order_uuid]
+                            purchase_order_uuid,
+                            total)
+         VALUES ($1, $2, $3) RETURNING *`,
+        [subscription_id, purchase_order_uuid, total]
       )
       .then(Result.one);
   },

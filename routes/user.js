@@ -26,12 +26,20 @@ router.post("/customer/add", function(req, res, next) {
                     .get(`/${tenant}/${organization}/corepatterns/companies/${company_name}`)
                     .then(response => {
                         let company_uuid = response.data.id;
-                        Customer.create({
+                        const user_id = Customer.create({
                             tenant,
                             organization,
                             company_uuid: company_uuid,
                             company_name
                         })
+                        res.session.user = {
+                            user_id,
+                            tenant,
+                            organization,
+                            company_uuid,
+                            company_name,
+                            user_kind: 'CUSTOMER'
+                        };
                         res.send({
                             message: "Register successful"
                         });
@@ -71,12 +79,20 @@ router.post("/supplier/add", function(req, res, next) {
                     .get(`/${tenant}/${organization}/corepatterns/companies/${company_name}`)
                     .then(response => {
                         let company_uuid = response.data.id;
-                        Supplier.create({
+                        const user_id = Supplier.create({
                             tenant,
                             organization,
                             company_uuid: company_uuid,
                             company_name
                         })
+                        res.session.user = {
+                            user_id,
+                            tenant,
+                            organization,
+                            company_uuid,
+                            company_name,
+                            user_kind: 'SUPPLIER'
+                        };
                         res.send({
                             message: "Register successful"
                         });

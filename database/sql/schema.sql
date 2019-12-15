@@ -107,11 +107,11 @@ CREATE TABLE secret_registry(
 CREATE TABLE sp_item(
   sp_item_id                SERIAL PRIMARY KEY,
   subscription_id           INTEGER NOT NULL,
-  supplier_item_uuid        UUID NOT NULL, -- PRIMAVERA SUPPLIER (PRIVATE)
-  customer_item_uuid        UUID NOT NULL, -- PRIMAVERA CUSTOMER (PRIVATE)
+  supplier_item             VARCHAR(40) NOT NULL, -- PRIMAVERA SUPPLIER (PRIVATE)
+  customer_item             VARCHAR(40) NOT NULL, -- PRIMAVERA CUSTOMER (PRIVATE)
   sp_item_createdat         PAST_TIMESTAMP,
 
-  CONSTRAINT SPItemNaturalKey UNIQUE(customer_item_uuid),
+  CONSTRAINT SPItemNaturalKey UNIQUE(customer_item),
 
   FOREIGN KEY(subscription_id) REFERENCES
     subscription(subscription_id) ON DELETE CASCADE
@@ -133,6 +133,16 @@ CREATE TABLE orders(
 
   FOREIGN KEY(subscription_id) REFERENCES
     subscription(subscription_id) ON DELETE CASCADE
+);
+
+CREATE TABLE order_item(
+  order_item_id             SERIAL PRIMARY KEY,
+  order_id                  INTEGER NOT NULL,
+  quantity                  INTEGER NOT NULL,
+  unit_price                REAL NOT NULL,
+
+  FOREIGN KEY(order_id) REFERENCES
+    orders(order_id) ON DELETE CASCADE
 );
 
 -- All invoices processed through the system. Each belongs to an order.

@@ -10,7 +10,7 @@ const {
   Item,
   ItemTaxSchema
 } = require("../models/primavera");
-const { Brand, Customer, Supplier, Orders, Invoice } = require("../models/techsinf");
+const { Brand, Customer, Supplier, Orders, Order_Item, Invoice } = require("../models/techsinf");
 
 // test on A
 const tenant = process.env.A_TENANT;
@@ -100,12 +100,24 @@ const storeOrders = (orders, res) =>
   for(let id in orders)
   {
     let purchase_order_uuid = orders[id].id.replace(/-/g, "");
+    if(orders[id].isDeleted != false || orders[id].serie != "2019")
+      continue;
     Orders.find(purchase_order_uuid)
     .then(response => {
         if(response === null) {
           Orders.create({ subscription_id, purchase_order_uuid: purchase_order_uuid })
             .then(response => {
-              console.log("Adding to database");
+              let order_id = response.order_id;
+
+              for(id2 in orders[id].documentLines)
+              {
+                let item = orders[id].documentLines[id2];
+
+                let quantity = item.quantity;
+                let unit_price = item.unitPrice.amount;
+
+                Order_Item.create({order_id, quantity, unit_price});
+              }
             }) 
             .catch(error => {
               console.log(error);
@@ -125,15 +137,15 @@ const storeOrders = (orders, res) =>
 }
 
 router.get("/sync/supplier", function(req, res, next) {
-  (api
+  /*(api
     .get(`/${req.query.tenant}/${req.query.organization}/billing/invoices`)
     .then(response => {storeInvoices(response.data)})
-    .catch(error => res.send(error))).then(getAllOrdersSupplier(res));
+    .catch(error => res.send(error))).then(getAllOrdersSupplier(res));*/
 
-  (api
+  api
     .get(`/${req.query.tenant}/${req.query.organization}/businesscore/brands`)
     .then(response => storeBrands(response.data))
-    .catch(error => console.log(error)));
+    .catch(error => console.log(error));
 
   /*api
     .get(`/${tenant}/${organization}/salescore/salesitems`)

@@ -3,6 +3,7 @@ module.exports = {
   Customer: require("./Customer"),
   Brand: require("./Brand"),
   Orders: require("./Orders"),
+  Order_Item: require("./Order_Item"),
   Invoice: require("./Invoice"),
   SecretRegistry: require("./SecretRegistry"),
   Subscription: require("./Subscription")

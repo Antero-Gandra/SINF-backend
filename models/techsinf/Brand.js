@@ -28,8 +28,13 @@ const Brand = {
   async allSupplier(supplier_id) {
     return db
       .query(
-        `SELECT * FROM supplier_brand
-         WHERE supplier_id = $1`,
+        `SELECT supplier_brand.brand_id, supplier_brand.brand_name, COUNT(*) 
+         FROM supplier_brand, subscription, sp_item 
+         WHERE supplier_id = $1 
+         AND supplier_brand.brand_id = subscription.brand_id 
+         AND subscription.subscription_id = sp_item.subscription_id 
+         GROUP BY supplier_brand.brand_id, supplier_brand.brand_name;
+        `,
         [supplier_id]
       )
       .then(Result.many);
@@ -61,7 +66,7 @@ const Brand = {
 
   makeMapBrandUUID(rows) {
     const map = {};
-    for (row in rows) map[row.brand_uuid] = row;
+    for (const row in rows) map[row.brand_uuid] = row;
     return map;
   }
 };

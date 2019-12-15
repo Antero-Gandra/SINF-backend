@@ -19,6 +19,16 @@ const Result = {
     if (typeof key === "string") for (row of rows) delete row[key];
     if (Array.isArray(key)) for (row of rows) for (k in key) delete row[k];
     return { rows, rowCount, ...rest };
+  },
+
+  // Map using a given column
+  map: key => ({ rows }) => {
+    const map = {};
+    for (const row in rows) {
+      if (row[key] in map) throw `Map repeated key: ${row[key]}`;
+      map[row[key]] = row;
+    }
+    return map;
   }
 };
 

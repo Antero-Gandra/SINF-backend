@@ -77,6 +77,19 @@ CREATE TABLE brand(
     supplier(supplier_id) ON DELETE CASCADE
 );
 
+-- All registered sales items.
+CREATE TABLE sales_item(
+  sales_item_id             SERIAL PRIMARY KEY,
+  brand_id                  INTEGER NOT NULL,
+  sales_item_uuid           UUID NOT NULL, -- PRIMAVERA SUPPLIER (PRIVATE)
+  sales_item_createdat      PAST_TIMESTAMP,
+
+  CONSTRAINT SalesItemUniqueInstance UNIQUE(sales_item_uuid),
+
+  FOREIGN KEY(brand_id) REFERENCES
+    brand(brand_id) ON DELETE CASCADE
+);
+
 -- All subscriptions of customer to supplier brands.
 CREATE TABLE subscription(
   subscription_id           SERIAL PRIMARY KEY,
@@ -146,7 +159,7 @@ CREATE TABLE order_item(
 
   FOREIGN KEY(order_id) REFERENCES
     orders(order_id) ON DELETE CASCADE,
-    
+
   FOREIGN KEY(sp_item_id) REFERENCES
     sp_item(sp_item_id) ON DELETE CASCADE
 );

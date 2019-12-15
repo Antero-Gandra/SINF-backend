@@ -135,6 +135,7 @@ CREATE TABLE orders(
     subscription(subscription_id) ON DELETE CASCADE
 );
 
+-- Items of each order.
 CREATE TABLE order_item(
   order_item_id             SERIAL PRIMARY KEY,
   order_id                  INTEGER NOT NULL,

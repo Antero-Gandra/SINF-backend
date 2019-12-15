@@ -107,20 +107,38 @@ router.get("/supplier", function(req, res, next) {
 });
 
 const storeInvoices = (invoices) => {
-  let order_id = '1';
   for (let id in invoices) {
     let sales_invoice_uuid = invoices[id].id.replace(/-/g, "");
     Invoice.find(sales_invoice_uuid)
       .then(response => {
         if (response === null) {
-          Invoice.create({
-              order_id,
-              sales_invoice_uuid: sales_invoice_uuid
-            })
-            .then(response)
-            .catch(error => {
-              console.log(error);
-            });
+
+          let remarks = invoices[id].remarks;
+
+          if (remarks != null) {
+            remarks = remarks.substring(remarks.indexOf('ORD-') + 4);
+
+            let order_id = '123';
+
+            let i = 0;
+
+            let char;
+            do {
+              char = remarks.charAt(i);
+              i++;
+            } while (char >= '0' && char <= '9');
+
+            order_id = remarks.substring(0, i - 1);
+
+            Invoice.create({
+                order_id,
+                sales_invoice_uuid: sales_invoice_uuid
+              })
+              .then(response)
+              .catch(error => {
+                console.log(error);
+              });
+          }
         }
       })
       .catch(error => {

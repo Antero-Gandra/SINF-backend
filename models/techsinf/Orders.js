@@ -13,18 +13,6 @@ const Orders = {
       .then(Result.one);
   },
 
-  // Get order's supplier
-  async getSupplier(order_uuid) {
-    return db
-      .query(
-        `SELECT *
-         FROM subscription_brand_orders
-        WHERE purchase_order_uuid = $1`,
-        [order_uuid]
-      )
-      .then(Result.one);
-  },
-
   // Get all orders for the given supplier.
   async allSupplier(supplier_id) {
     return db
@@ -87,8 +75,9 @@ const Orders = {
   async find(purchase_order_uuid) {
     return db
       .query(
-        `SELECT * FROM orders
-         WHERE purchase_order_uuid = $1`,
+          `SELECT *
+           FROM subscription_brand_orders
+          WHERE purchase_order_uuid = $1`,
         [purchase_order_uuid]
       )
       .then(Result.one);
@@ -115,6 +104,17 @@ const Orders = {
              stage = 'SALES_ORDER'
          WHERE order_id = $1 RETURNING *`,
         [order_id, sales_order_uuid]
+      )
+      .then(Result.count);
+  },
+
+  async complete(order_id) {
+    return db
+      .query(
+        `UPDATE orders
+        SET stage = 'COMPLETED'
+        WHERE order_id = $1 RETURNING *`,
+        [order_id]
       )
       .then(Result.count);
   },

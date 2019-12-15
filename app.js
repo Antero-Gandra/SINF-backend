@@ -20,6 +20,7 @@ const generateRouter = require("./routes/generate");
 const subscriptionRouter = require("./routes/subscriptions");
 const brandsRouter = require("./routes/brand");
 
+
 // setup endpoints and fetch access_token
 require("./utils/token");
 

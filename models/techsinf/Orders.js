@@ -39,11 +39,15 @@ const Orders = {
   async allOrdersCustomer() {
     return db
       .query(
-        `SELECT * FROM orders, subscription, brand, supplier, "user"
+        `SELECT orders.order_id, orders.stage, orders.total, "user".company_name, COUNT(*)
+        FROM orders, subscription, brand, supplier, "user", order_item
         WHERE orders.subscription_id = subscription.subscription_id
         AND subscription.brand_id = brand.brand_id
         AND supplier.supplier_id = brand.supplier_id
-        AND supplier.supplier_id = "user".user_id`
+        AND supplier.supplier_id = "user".user_id
+        AND order_item.order_id = orders.order_id
+        GROUP BY orders.order_id, "user".company_name
+        ORDER BY orders.order_id`
       )
       .then(Result.many);
   },
@@ -51,10 +55,14 @@ const Orders = {
   async allOrdersSupplier() {
     return db
       .query(
-        `SELECT * FROM orders, subscription, customer, "user"
+        `SELECT orders.order_id, orders.stage, orders.total, "user".company_name, COUNT(*)
+        FROM orders, subscription, customer, "user", order_item
         WHERE orders.subscription_id = subscription.subscription_id
         AND subscription.customer_id = customer.customer_id
-        AND customer.customer_id = "user".user_id`
+        AND customer.customer_id = "user".user_id
+        AND order_item.order_id = orders.order_id
+        GROUP BY orders.order_id, "user".company_name
+        ORDER BY orders.order_id`
       )
       .then(Result.many);
   },

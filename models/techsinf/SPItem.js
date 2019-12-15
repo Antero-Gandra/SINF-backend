@@ -83,13 +83,13 @@ const SPItem = {
 
   makeMapPurchaseItems(rows) {
     const map = {};
-    for (row in rows) map[row.purchase_item_uuid] = row;
+    for (const row in rows) map[row.purchase_item_uuid] = row;
     return map;
   },
 
   makeMapSalesItems(rows) {
     const map = {};
-    for (row in rows) map[row.sales_item_uuid] = row;
+    for (const row in rows) map[row.sales_item_uuid] = row;
     return map;
   }
 };

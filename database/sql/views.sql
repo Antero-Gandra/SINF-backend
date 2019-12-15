@@ -28,7 +28,7 @@ SELECT C.*,
 FROM "user" U
 JOIN customer C ON U.user_id = C.customer_id;
 
--- * BRAND, SUBSCRIPTION
+-- * BRAND, SUBSCRIPTION, SALES_ITEM
 
 -- supplier JOIN brand
 CREATE OR REPLACE VIEW supplier_brand AS
@@ -56,6 +56,13 @@ SELECT *
 FROM supplier_user SU
 NATURAL JOIN brand B
 NATURAL JOIN subscription S;
+
+-- supplier JOIN brand JOIN sales_item
+CREATE OR REPLACE VIEW brand_sales_item AS
+SELECT *
+FROM sales_item SI
+NATURAL JOIN brand B
+NATURAL JOIN supplier_user SU;
 
 -- * SECRET REGISTRY
 

@@ -57,6 +57,12 @@ const Brand = {
         [brand_id]
       )
       .then(Result.count);
+  },
+
+  makeMapBrandUUID(rows) {
+    const map = {};
+    for (row in rows) map[row.brand_uuid] = row;
+    return map;
   }
 };
 

@@ -20,9 +20,11 @@ router.post("/salesOrder", function(req, res, next) {
   let documentLines = [];
 
   Orders.find(order_uuid)
-    .then(response =>
-      Orders.find(order_uuid)
       .then(response => {
+
+        if(response.stage !== "PURCHASE_ORDER");
+          return;
+          
         orderID = response.order_id;
         buyer = response.customer_company_name;
         supplierTenant = response.supplier_tenant;
@@ -59,7 +61,6 @@ router.post("/salesOrder", function(req, res, next) {
           })
       })
       .catch(error => res.send(error))
-    )
     .catch(error => res.send(error));
 });
 

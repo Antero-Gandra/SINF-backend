@@ -134,10 +134,11 @@ const storeInvoices = (invoices) => {
                 order_id,
                 sales_invoice_uuid: sales_invoice_uuid
               })
-              .then(response)
               .catch(error => {
                 console.log(error);
               });
+
+            Orders.receiveSalesInvoice(order_id);
           }
         }
       })

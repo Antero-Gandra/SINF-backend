@@ -4,11 +4,9 @@ const {
 } = require("../utils/endpoints");
 const router = express.Router();
 const {
-  Brand,
   Invoice,
   Orders,
   Order_Item,
-  SPItem
 } = require("../models/techsinf");
 
 router.post("/salesOrder", function(req, res, next) {

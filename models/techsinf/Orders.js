@@ -109,6 +109,17 @@ const Orders = {
       .then(Result.count);
   },
 
+  async receiveSalesInvoice(order_id) {
+    return db
+    .query(
+      `UPDATE orders
+      SET stage = 'SALES_INVOICE'
+      WHERE order_id = $1 RETURNING *`,
+      [order_id]
+    )
+    .then(Result.count);
+  },
+
   async complete(order_id) {
     return db
       .query(

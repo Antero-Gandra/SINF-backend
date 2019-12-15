@@ -37,7 +37,8 @@ CREATE TABLE "user"(
   tenant                    VARCHAR(20) NOT NULL,
   organization              VARCHAR(20) NOT NULL,
   user_kind                 TECHSINF_ROLE NOT NULL,
-  company_uuid              UUID NOT NULL, -- PRIMAVERA USER (PRIVATE)
+  company_uuid              VARCHAR(40) NOT NULL, -- PRIMAVERA USER (PRIVATE)
+  company_name              VARCHAR(40) NOT NULL,
   user_createdat            PAST_TIMESTAMP,
 
   CONSTRAINT UserNaturalKey UNIQUE(tenant, organization, user_kind),
@@ -67,6 +68,7 @@ CREATE TABLE brand(
   brand_id                  SERIAL PRIMARY KEY,
   supplier_id               INTEGER NOT NULL,
   brand_uuid                UUID NOT NULL, -- PRIMAVERA SUPPLIER (PRIVATE)
+  brand_name                VARCHAR(40) NOT NULL,
   brand_createdat           PAST_TIMESTAMP,
 
   CONSTRAINT BrandUniqueInstance UNIQUE(brand_uuid),
@@ -105,11 +107,11 @@ CREATE TABLE secret_registry(
 CREATE TABLE sp_item(
   sp_item_id                SERIAL PRIMARY KEY,
   subscription_id           INTEGER NOT NULL,
-  supplier_item_uuid        UUID NOT NULL, -- PRIMAVERA SUPPLIER (PRIVATE)
-  customer_item_uuid        UUID NOT NULL, -- PRIMAVERA CUSTOMER (PRIVATE)
+  supplier_item             VARCHAR(40) NOT NULL, -- PRIMAVERA SUPPLIER (PRIVATE)
+  customer_item             VARCHAR(40) NOT NULL, -- PRIMAVERA CUSTOMER (PRIVATE)
   sp_item_createdat         PAST_TIMESTAMP,
 
-  CONSTRAINT SPItemNaturalKey UNIQUE(customer_item_uuid),
+  CONSTRAINT SPItemNaturalKey UNIQUE(customer_item),
 
   FOREIGN KEY(subscription_id) REFERENCES
     subscription(subscription_id) ON DELETE CASCADE
@@ -121,9 +123,10 @@ CREATE TABLE sp_item(
 CREATE TABLE orders(
   order_id                  SERIAL PRIMARY KEY,
   subscription_id           INTEGER NOT NULL,
-  stage                     ORDER_STAGE NOT NULL,
+  stage                     ORDER_STAGE NOT NULL DEFAULT 'PURCHASE_ORDER',
   purchase_order_uuid       UUID NOT NULL, -- PRIMAVERA CUSTOMER (PRIVATE)
   sales_order_uuid          UUID NULL,
+  total                     REAL NOT NULL,
   order_createdat           PAST_TIMESTAMP,
 
   CONSTRAINT UniquePurchaseOrder UNIQUE(purchase_order_uuid),
@@ -131,6 +134,21 @@ CREATE TABLE orders(
 
   FOREIGN KEY(subscription_id) REFERENCES
     subscription(subscription_id) ON DELETE CASCADE
+);
+
+-- Items of each order.
+CREATE TABLE order_item(
+  order_item_id             SERIAL PRIMARY KEY,
+  order_id                  INTEGER NOT NULL,
+  sp_item_id                INTEGER NOT NULL,
+  quantity                  INTEGER NOT NULL,
+  unit_price                REAL NOT NULL,
+
+  FOREIGN KEY(order_id) REFERENCES
+    orders(order_id) ON DELETE CASCADE,
+    
+  FOREIGN KEY(sp_item_id) REFERENCES
+    sp_item(sp_item_id) ON DELETE CASCADE
 );
 
 -- All invoices processed through the system. Each belongs to an order.

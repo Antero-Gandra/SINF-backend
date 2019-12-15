@@ -36,13 +36,14 @@ const Brand = {
   },
 
   // Create a new brand for the given supplier and brand UUID.
-  async create({ supplier_id, brand_uuid }) {
+  async create({ supplier_id, brand_uuid, brand_name }) {
     return db
       .query(
         `INSERT INTO brand(supplier_id,
-                           brand_uuid)
-         VALUES ($1, $2) RETURNING *`,
-        [supplier_id, brand_uuid]
+                           brand_uuid,
+                           brand_name)
+         VALUES ($1, $2, $3) RETURNING *`,
+        [supplier_id, brand_uuid, brand_name]
       )
       .then(Result.one);
   },

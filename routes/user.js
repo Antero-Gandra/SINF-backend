@@ -104,7 +104,8 @@ router.post("/supplier/add", function(req, res, next) {
             } else {
                 console.log("success, found existing user");
                 res.send({
-                    message: "Login successful"
+                    message: "Login successful",
+                    id: response.supplier_id
                 });
             }
         })

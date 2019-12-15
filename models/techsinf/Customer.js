@@ -20,10 +20,12 @@ const Customer = {
 
   // Find customer with the given tenant and organization identifiers.
   async find({ tenant, organization, company_name }) {
+    console.log(company_name);
     return db
       .query(
         `SELECT * FROM customer_user
-         WHERE customer_tenant = $1 AND customer_organization = $2
+         WHERE customer_tenant = $1 
+         AND customer_organization = $2
          AND customer_company_name = $3`,
         [tenant, organization, company_name]
       )

@@ -6,9 +6,9 @@ router.get("/get/all/customer", function(req, res, next) {
 
     let tenant = req.query.tenant;
     let organization = req.query.organization;
-    let company_uuid = req.query.company;
+    let company_name = req.query.company;
     
-    Customer.find({ tenant, organization, company_uuid }).then(response =>{
+    Customer.find({ tenant, organization, company_name }).then(response =>{
         if(response !== null){
             let userId = response.customer_id;
 
@@ -28,9 +28,9 @@ router.get("/get/all/customer", function(req, res, next) {
 router.get("/get/all/supplier", function(req, res, next) {
     let tenant = req.query.tenant;
     let organization = req.query.organization;
-    let company_uuid = req.query.company;
+    let company_name = req.query.company;
     
-    Supplier.find({ tenant, organization, company_uuid }).then(response =>{
+    Supplier.find({ tenant, organization, company_name }).then(response =>{
         if(response !==  null){
             let userId = response.supplier_id;
 

@@ -138,11 +138,15 @@ CREATE TABLE orders(
 CREATE TABLE order_item(
   order_item_id             SERIAL PRIMARY KEY,
   order_id                  INTEGER NOT NULL,
+  sp_item_id                INTEGER NOT NULL,
   quantity                  INTEGER NOT NULL,
   unit_price                REAL NOT NULL,
 
   FOREIGN KEY(order_id) REFERENCES
-    orders(order_id) ON DELETE CASCADE
+    orders(order_id) ON DELETE CASCADE,
+    
+  FOREIGN KEY(sp_item_id) REFERENCES
+    sp_item(sp_item_id) ON DELETE CASCADE
 );
 
 -- All invoices processed through the system. Each belongs to an order.

@@ -13,6 +13,18 @@ const Orders = {
       .then(Result.one);
   },
 
+  // Get order's supplier
+  async getSupplier(order_uuid) {
+    return db
+      .query(
+        `SELECT *
+         FROM subscription_brand_orders
+        WHERE purchase_order_uuid = $1`,
+        [order_uuid]
+      )
+      .then(Result.one);
+  },
+
   // Get all orders for the given supplier.
   async allSupplier(supplier_id) {
     return db

@@ -3,15 +3,15 @@ const Result = require("./result");
 
 const Order_Item = {
   // Create new sales order item
-  async create({ order_id, quantity, unit_price }) {
-      console.log(unit_price);
+  async create({ order_id, sp_item_id, quantity, unit_price }) {
     return db
       .query(
         `INSERT INTO order_item(order_id,
+                                sp_item_id,
                                 quantity,
                                 unit_price)
-         VALUES ($1, $2, $3) RETURNING *`,
-        [order_id, quantity, unit_price]
+         VALUES ($1, $2, $3, $4) RETURNING *`,
+        [order_id, sp_item_id, quantity, unit_price]
       )
       .then(Result.one);
   },
@@ -20,7 +20,8 @@ const Order_Item = {
   {
     return db
     .query(
-        `SELECT * FROM order_item
+        `SELECT * FROM order_item 
+                  NATURAL JOIN sp_item 
          WHERE order_id = $1`,
         [order_id]
       )

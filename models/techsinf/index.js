@@ -6,5 +6,6 @@ module.exports = {
   Order_Item: require("./Order_Item"),
   Invoice: require("./Invoice"),
   SecretRegistry: require("./SecretRegistry"),
+  SPItem: require("./SPItem"),
   Subscription: require("./Subscription")
 };

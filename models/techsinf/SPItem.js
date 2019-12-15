@@ -36,33 +36,33 @@ const SPItem = {
   },
 
   // Get all purchase items matching the given sales item
-  async purchaseItems(supplier_item_uuid) {
+  async purchaseItems(supplier_item) {
     return db
       .query(
         `SELECT * FROM sp_item
-         WHERE supplier_item_uuid = $1`,
-        [supplier_item_uuid]
+         WHERE supplier_item = $1`,
+        [supplier_item]
       )
       .then(Result.many);
   },
 
   // Get the sales item matching the given purchase item
-  async salesItem(customer_item_uuid) {
+  async salesItem(customer_item) {
     return db
       .query(
         `SELECT * FROM sp_item
-         WHERE customer_item_uuid = $1`,
-        [customer_item_uuid]
+         WHERE customer_item = $1`,
+        [customer_item]
       )
       .then(Result.one);
   },
 
   // Return an object map with the matching sales items for the given purchase items
-  async mapSalesItems({ subscription_id, purchases_items_uuids }) {
+  async mapSalesItems({ subscription_id, purchases_items }) {
     const rows = await db
       .query(
         `SELECT * FROM subscription_brand_sp_item
-         WHERE subscription_id = $1 AND purchase_item_uuid = ANY ($2)`,
+         WHERE subscription_id = $1 AND purchase_item = ANY ($2)`,
         [subscription_id, purchases_items_uuids]
       )
       .then(Result.many);
@@ -72,12 +72,12 @@ const SPItem = {
   },
 
   // Return an object map with the matching purchase items for the given sales items
-  async mapPurchasesItems({ subscription_id, sales_items_uuids }) {
+  async mapPurchasesItems({ subscription_id, sales_items }) {
     const rows = await db
       .query(
         `SELECT * FROM subscription_brand_sp_item
-         WHERE subscription_id = $1 AND sales_item_uuid = ANY ($2)`,
-        [subscription_id, sales_items_uuids]
+         WHERE subscription_id = $1 AND sales_item = ANY ($2)`,
+        [subscription_id, sales_items]
       )
       .then(Result.many);
     const map = {};

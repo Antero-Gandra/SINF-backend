@@ -10,7 +10,7 @@ const {
   Item,
   ItemTaxSchema
 } = require("../models/primavera");
-const { Brand, Customer, Supplier, Orders, Order_Item, Invoice } = require("../models/techsinf");
+const { Brand, Customer, Supplier, Orders, Order_Item, Invoice, SPItem } = require("../models/techsinf");
 
 // test on A
 const tenant = process.env.A_TENANT;
@@ -100,8 +100,10 @@ const storeOrders = (orders, res) =>
   for(let id in orders)
   {
     let purchase_order_uuid = orders[id].id.replace(/-/g, "");
+
     if(orders[id].isDeleted != false || orders[id].serie != "2019")
       continue;
+
     Orders.find(purchase_order_uuid)
     .then(response => {
         if(response === null) {
@@ -116,7 +118,17 @@ const storeOrders = (orders, res) =>
                 let quantity = item.quantity;
                 let unit_price = item.unitPrice.amount;
 
-                Order_Item.create({order_id, quantity, unit_price});
+                SPItem.salesItem(item.purchasesItem)
+                  .then(response =>
+                    {
+                      let sp_item_id = response.sp_item_id;
+
+                      Order_Item.create({order_id, sp_item_id, quantity, unit_price})
+                    })
+                  .catch(error => {
+                      res.send(error);
+                  });
+
               }
             }) 
             .catch(error => {
@@ -136,11 +148,65 @@ const storeOrders = (orders, res) =>
   }
 }
 
+router.post("/orders/generate", function(req, res, next) {
+  let order_uuid = req.body.orderId;
+
+  let orderID;
+  let salesOrderUUID;
+  let buyer;
+  let supplierTenant
+  let supplierOrganization;
+  let supplierCompany;
+  let documentLines = [];
+
+  Orders.find(order_uuid)
+    .then(response =>
+      Orders.getSupplier(order_uuid)
+        .then(response =>
+          {
+            orderID = response.order_id,
+            buyer = response.customer_company_name;
+            supplierTenant = response.supplier_tenant;
+            supplierOrganization = response.supplier_organization;
+            supplierCompany = response.supplier_company_name;
+
+            Order_Item.findOrderItems(orderID)
+              .then(response =>
+                {
+                  for(id in response)
+                  {
+                    let item = response[id];
+
+                    documentLines.push(
+                      {
+                        "salesItem": item.supplier_item,
+                        "quantity": item.quantity,
+                        "unitPrice": {
+                          "amount": item.unit_price,
+                        }
+                      })
+                  }
+
+                  api
+                  .post(`/${supplierTenant}/${supplierOrganization}/sales/orders`, {
+                    company: supplierCompany,
+                    buyerCustomerParty: '0001',
+                    deliveryTerm: 'TRANSP',
+                    documentLines: documentLines
+                  })
+                  .then(response => Orders.accept({order_id: orderID, sales_order_uuid: response.data}))
+                  .catch(error => console.log(error));
+                })
+              }))
+        .catch(error => res.send(error))
+    .catch(error => res.send(error));
+});
+
 router.get("/sync/supplier", function(req, res, next) {
-  /*(api
+  (api
     .get(`/${req.query.tenant}/${req.query.organization}/billing/invoices`)
     .then(response => {storeInvoices(response.data)})
-    .catch(error => res.send(error))).then(getAllOrdersSupplier(res));*/
+    .catch(error => res.send(error))).then(getAllOrdersSupplier(res));
 
   api
     .get(`/${req.query.tenant}/${req.query.organization}/businesscore/brands`)

@@ -48,6 +48,13 @@ router.get("/get/all/supplier", function(req, res, next) {
 
 router.delete("/delete/:id", function(req, res, next) {
     let subscriptionId = req.params.id;
+
+    Subscription.delete(subscriptionId)
+        .then(res.send({msg: "Deleted subscription!"}))
+        .catch(error => {
+            console.log(error);
+            res.send(error);
+        })
 });
 
 module.exports = router;

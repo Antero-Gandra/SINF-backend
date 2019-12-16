@@ -23,7 +23,6 @@ const syncKnownBrand = async (supplier, jasminBrand, dbBrand) => {
 
   const promises = jasminItems.map(jasminItem => {
     const sales_item_uuid = jasminItem.id;
-    if (sales_item_uuid in dbItems) continue;
     return SalesItem.create({ brand_id, sales_item_uuid });
   });
 

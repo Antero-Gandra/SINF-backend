@@ -59,5 +59,4 @@ const Customer = {
 };
 
 Object.freeze(Customer);
-
 module.exports = Customer;

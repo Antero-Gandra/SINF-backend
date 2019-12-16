@@ -6,6 +6,7 @@ const {
   SecretRegistry,
   Subscription
 } = require("../models/techsinf");
+const SyncService = require("../services/SyncService");
 
 router.get("/get/all/customer/:id", function(req, res, next) {
   let customerId = req.params.id;
@@ -14,11 +15,13 @@ router.get("/get/all/customer/:id", function(req, res, next) {
 
 router.get("/get/all/supplier/:id", function(req, res, next) {
   let supplierId = req.params.id;
+  let ten = req.query.tenant;
+  let org = req.query.organization;
 
-  Brand.allSupplier(supplierId)
-    .then(response => {
-      console.log(response);
-      res.send(response);
+  SyncService.brands({user_id: supplierId, tenant: ten, organization: org})
+    .then(data => {
+      console.log(data);
+      res.send(response)
     })
     .catch(error => res.send(error));
 });

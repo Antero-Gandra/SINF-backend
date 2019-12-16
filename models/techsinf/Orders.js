@@ -79,13 +79,24 @@ const Orders = {
   },
 
   // Find order with the given UUID. Remember to check authorization.
-  async find(purchase_order_uuid) {
+  async findByPurchaseUUID(purchase_order_uuid) {
     return db
       .query(
           `SELECT *
            FROM orders_customer_supplier
           WHERE purchase_order_uuid = $1`,
         [purchase_order_uuid]
+      )
+      .then(Result.one);
+  },
+
+  async findByOrderID(order_id) {
+    return db
+      .query(
+          `SELECT *
+           FROM orders_customer_supplier
+          WHERE order_id = $1`,
+        [order_id]
       )
       .then(Result.one);
   },

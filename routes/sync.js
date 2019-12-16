@@ -12,11 +12,13 @@ const {
   SPItem
 } = require("../models/techsinf");
 
-router.get("/customer", function(req, res, next) {
-  (api
+router.get("/customer", async function(req, res, next) {
+  await api
     .get(`/${req.query.tenant}/${req.query.organization}/purchases/orders`)
     .then(response => storeOrders(req.query.tenant, req.query.organization, response.data, res))
-    .catch(error => res.send(error))).then(getAllOrdersCustomer(res));
+    .catch(error => res.send(error))
+    
+    await getAllOrdersCustomer(res);
 
   /*api
     .get(`/${tenant}/${organization}/purchasesCore/purchasesItems`)
@@ -33,7 +35,7 @@ const storeOrders = (tenant, organization, orders, res) => {
     if (orders[id].isDeleted != false || orders[id].serie != "2019")
       continue;
 
-    Orders.find(purchase_order_uuid)
+    Orders.findByPurchaseUUID(purchase_order_uuid)
       .then(response => {
         if (response === null) {
 

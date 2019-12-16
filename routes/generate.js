@@ -10,117 +10,133 @@ const {
   SecretRegistry
 } = require("../models/techsinf");
 
-router.post("/salesOrder", function(req, res, next) {
-  let order_uuid = req.body.orderId;
+router.post("/salesOrder", async function(req, res, next) {
+  let order_id = req.body.orderId;
 
-  let orderID;
   let buyer;
   let supplierTenant
   let supplierOrganization;
   let supplierCompany;
   let documentLines = [];
 
-  Orders.find(order_uuid)
-      .then(response => {
+  await Orders.findByOrderID(order_id)
+    .then(response => {
 
-        if(response.stage !== "PURCHASE_ORDER");
-          return;
-          
-        orderID = response.order_id;
-        buyer = response.customer_company_name;
-        supplierTenant = response.supplier_tenant;
-        supplierOrganization = response.supplier_organization;
-        supplierCompany = response.supplier_company_name;
+      let stage = response.stage;
 
-        Order_Item.findOrderItems(orderID)
-          .then(response => {
-            for (id in response) {
-              let item = response[id];
+      if (stage == 'SALES_ORDER' || stage == 'SALES_INVOICE' || stage == 'PURCHASE_INVOICE') {
+        res.send({
+          message: 'Sales order was already generated!'
+        })
+        return;
+      }
 
-              documentLines.push({
-                "salesItem": item.supplier_item,
-                "quantity": item.quantity,
-                "unitPrice": {
-                  "amount": item.unit_price,
-                }
-              })
-            }
+      buyer = response.customer_company_name;
+      supplierTenant = response.supplier_tenant;
+      supplierOrganization = response.supplier_organization;
+      supplierCompany = response.supplier_company_name;
 
-            api
-              .post(`/${supplierTenant}/${supplierOrganization}/sales/orders`, {
-                company: supplierCompany,
-                buyerCustomerParty: '0001',
-                deliveryTerm: 'TRANSP',
-                serie: '2019',
-                documentLines: documentLines
-              })
-              .then(response => Orders.accept({
-                order_id: orderID,
-                sales_order_uuid: response.data
-              }))
-              .catch(error => console.log(error));
-          })
-      })
-      .catch(error => res.send(error))
+      Order_Item.findOrderItems(order_id)
+        .then(response => {
+          for (id in response) {
+            let item = response[id];
+
+            documentLines.push({
+              "salesItem": item.supplier_item,
+              "quantity": item.quantity,
+              "unitPrice": {
+                "amount": item.unit_price,
+              }
+            })
+          }
+
+          api
+            .post(`/${supplierTenant}/${supplierOrganization}/sales/orders`, {
+              company: supplierCompany,
+              buyerCustomerParty: '0001',
+              deliveryTerm: 'TRANSP',
+              serie: '2019',
+              documentLines: documentLines
+            })
+            .then(response => Orders.accept({
+              order_id: order_id,
+              sales_order_uuid: response.data
+            }))
+            .catch(error => console.log(error));
+        })
+    })
+    .catch(error => res.send(error))
     .catch(error => res.send(error));
+
+  res.send({
+    message: 'Sales order generated!'
+  })
 });
 
-router.post("/purchaseInvoice", function(req, res, next) {
-  let order_uuid = req.body.orderId;
+router.post("/purchaseInvoice", async function(req, res, next) {
+  let order_id = req.body.orderId;
 
-  let orderID;
   let seller;
   let buyerTenant
   let buyerOrganization;
   let buyerCompany;
   let documentLines = [];
 
-  Orders.find(order_uuid)
+  await Orders.findByOrderID(order_id)
     .then(response => {
-      Orders.find(order_uuid)
-        .then(response => {
 
-          orderID = response.order_id;
-          buyerTenant = response.customer_tenant;
-          buyerOrganization = response.customer_organization;
-          buyerCompany = response.customer_company_name;
-          seller = response.supplier_company_name;
+      let stage = response.stage;
 
-          Order_Item.findOrderItems(orderID)
-            .then(response => {
-              for (id in response) {
-                let item = response[id];
-
-                documentLines.push({
-                  "purchasesItem": item.customer_item,
-                  "quantity": item.quantity,
-                  "unitPrice": {
-                    "amount": item.unit_price,
-                  }
-                })
-              }
-
-              api
-                .post(`/${buyerTenant}/${buyerOrganization}/invoiceReceipt/invoices`, {
-                  documentType: 'VFA',
-                  company: buyerCompany,
-                  serie: '2019',
-                  sellerSupplierParty: '0001',
-                  documentLines: documentLines
-                })
-                .then(response => {
-                  Orders.complete(orderID);
-                  Invoice.setPurchase({
-                    order_id: orderID,
-                    purchase_invoice_uuid: response.data
-                  })
-                })
-                .catch(error => console.log(error));
-            })
-
+      if (stage == 'COMPLETED') {
+        res.send({
+          message: 'Purchase invoice was already generated!'
         })
+        return;
+      }
+
+      buyerTenant = response.customer_tenant;
+      buyerOrganization = response.customer_organization;
+      buyerCompany = response.customer_company_name;
+      seller = response.supplier_company_name;
+
+      Order_Item.findOrderItems(order_id)
+        .then(response => {
+          for (id in response) {
+            let item = response[id];
+
+            documentLines.push({
+              "purchasesItem": item.customer_item,
+              "quantity": item.quantity,
+              "unitPrice": {
+                "amount": item.unit_price,
+              }
+            })
+          }
+
+          api
+            .post(`/${buyerTenant}/${buyerOrganization}/invoiceReceipt/invoices`, {
+              documentType: 'VFA',
+              company: buyerCompany,
+              serie: '2019',
+              sellerSupplierParty: '0001',
+              documentLines: documentLines
+            })
+            .then(response => {
+              Orders.complete(order_id);
+              Invoice.setPurchase({
+                order_id: order_id,
+                purchase_invoice_uuid: response.data
+              })
+            })
+            .catch(error => console.log(error));
+        })
+
     })
     .catch(error => console.log(error))
+
+    res.send({
+      message: 'Purchase invoice generated!'
+    })
 });
 
 router.post("/key", async function(req, res, next) {
@@ -128,11 +144,11 @@ router.post("/key", async function(req, res, next) {
   let brand_id = req.body.brandId;
 
   await SecretRegistry.generate(brand_id)
-  .catch(error => res.send(error))
+    .catch(error => res.send(error))
 
   await SecretRegistry.getLast(brand_id)
-  .then(response => res.send(response))
-  .catch(error => res.send(error))
+    .then(response => res.send(response))
+    .catch(error => res.send(error))
 });
 
 module.exports = router;

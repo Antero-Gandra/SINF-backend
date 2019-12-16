@@ -17,7 +17,6 @@ router.get("/get/all/supplier/:id", function(req, res, next) {
 
   Brand.allSupplier(supplierId)
     .then(response => {
-      console.log(response);
       res.send(response);
     })
     .catch(error => res.send(error));

@@ -102,17 +102,9 @@ NATURAL JOIN sp_item I;
 
 -- * ORDERS
 
--- subscription JOIN orders
-CREATE OR REPLACE VIEW subscription_orders AS
+-- order JOIN customer JOIN supplier
+CREATE OR REPLACE VIEW orders_customer_supplier AS
 SELECT *
-FROM subscription S
-NATURAL JOIN orders O;
-
--- subscription JOIN brand JOIN orders
-CREATE OR REPLACE VIEW subscription_brand_orders AS
-SELECT *
-FROM brand B
-NATURAL JOIN subscription S
-NATURAL JOIN orders O
+FROM orders O
 NATURAL JOIN supplier_user SU
 NATURAL JOIN customer_user CU;

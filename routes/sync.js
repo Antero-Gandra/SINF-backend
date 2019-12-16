@@ -5,6 +5,7 @@ const {
 const router = express.Router();
 const {
   Brand,
+  Customer,
   Invoice,
   Orders,
   Order_Item,
@@ -14,7 +15,7 @@ const {
 router.get("/customer", function(req, res, next) {
   (api
     .get(`/${req.query.tenant}/${req.query.organization}/purchases/orders`)
-    .then(response => storeOrders(response.data, res))
+    .then(response => storeOrders(req.query.tenant, req.query.organization, response.data, res))
     .catch(error => res.send(error))).then(getAllOrdersCustomer(res));
 
   /*api
@@ -23,10 +24,10 @@ router.get("/customer", function(req, res, next) {
     .catch(error => res.send(error));*/
 });
 
-const storeOrders = (orders, res) => {
-  let subscription_id = '1';
+const storeOrders = (tenant, organization, orders, res) => {
   for (let id in orders) {
     let purchase_order_uuid = orders[id].id.replace(/-/g, "");
+    let company_name = orders[id].company;
     let total = orders[id].grossValue.amount;
 
     if (orders[id].isDeleted != false || orders[id].serie != "2019")
@@ -35,40 +36,53 @@ const storeOrders = (orders, res) => {
     Orders.find(purchase_order_uuid)
       .then(response => {
         if (response === null) {
-          Orders.create({
-              subscription_id,
-              purchase_order_uuid: purchase_order_uuid,
-              total
+
+          Customer.find({
+              tenant,
+              organization,
+              company_name
             })
             .then(response => {
-              let order_id = response.order_id;
 
-              for (id2 in orders[id].documentLines) {
-                let item = orders[id].documentLines[id2];
+              let customer_id = response.customer_id;
+              let supplier_id = '2';
 
-                let quantity = item.quantity;
-                let unit_price = item.unitPrice.amount;
+              Orders.create({
+                  customer_id,
+                  supplier_id,
+                  purchase_order_uuid: purchase_order_uuid,
+                  total
+                })
+                .then(response => {
+                  let order_id = response.order_id;
 
-                SPItem.salesItem(item.purchasesItem)
-                  .then(response => {
-                    let sp_item_id = response.sp_item_id;
+                  for (id2 in orders[id].documentLines) {
+                    let item = orders[id].documentLines[id2];
 
-                    Order_Item.create({
-                      order_id,
-                      sp_item_id,
-                      quantity,
-                      unit_price
-                    })
-                  })
-                  .catch(error => {
-                    res.send(error);
-                  });
+                    let quantity = item.quantity;
+                    let unit_price = item.unitPrice.amount;
 
-              }
-            })
-            .catch(error => {
-              console.log(error);
-              res.send(error);
+                    SPItem.salesItem(item.purchasesItem)
+                      .then(response => {
+                        let sp_item_id = response.sp_item_id;
+
+                        Order_Item.create({
+                          order_id,
+                          sp_item_id,
+                          quantity,
+                          unit_price
+                        })
+                      })
+                      .catch(error => {
+                        res.send(error);
+                      });
+
+                  }
+                })
+                .catch(error => {
+                  console.log(error);
+                  res.send(error);
+                });
             });
         }
       })

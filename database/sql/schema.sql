@@ -135,8 +135,9 @@ CREATE TABLE sp_item(
 -- All orders processed through the system.
 CREATE TABLE orders(
   order_id                  SERIAL PRIMARY KEY,
-  subscription_id           INTEGER NOT NULL,
   stage                     ORDER_STAGE NOT NULL DEFAULT 'PURCHASE_ORDER',
+  customer_id               INTEGER NOT NULL,
+  supplier_id               INTEGER NOT NULL,
   purchase_order_uuid       UUID NOT NULL, -- PRIMAVERA CUSTOMER (PRIVATE)
   sales_order_uuid          UUID NULL,
   total                     REAL NOT NULL,
@@ -145,8 +146,11 @@ CREATE TABLE orders(
   CONSTRAINT UniquePurchaseOrder UNIQUE(purchase_order_uuid),
   CONSTRAINT UniqueSalesOrder UNIQUE(sales_order_uuid),
 
-  FOREIGN KEY(subscription_id) REFERENCES
-    subscription(subscription_id) ON DELETE CASCADE
+  FOREIGN KEY(customer_id) REFERENCES
+    customer(customer_id) ON DELETE CASCADE,
+
+  FOREIGN KEY(supplier_id) REFERENCES
+    supplier(supplier_id) ON DELETE CASCADE
 );
 
 -- Items of each order.

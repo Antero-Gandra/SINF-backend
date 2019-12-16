@@ -40,10 +40,8 @@ const Orders = {
     return db
       .query(
         `SELECT orders.order_id, orders.stage, orders.total, "user".company_name, COUNT(*)
-        FROM orders, subscription, brand, supplier, "user", order_item
-        WHERE orders.subscription_id = subscription.subscription_id
-        AND subscription.brand_id = brand.brand_id
-        AND supplier.supplier_id = brand.supplier_id
+        FROM orders, supplier, "user", order_item
+        WHERE orders.supplier_id = supplier.supplier_id
         AND supplier.supplier_id = "user".user_id
         AND order_item.order_id = orders.order_id
         GROUP BY orders.order_id, "user".company_name
@@ -56,9 +54,8 @@ const Orders = {
     return db
       .query(
         `SELECT orders.order_id, orders.stage, orders.total, "user".company_name, COUNT(*)
-        FROM orders, subscription, customer, "user", order_item
-        WHERE orders.subscription_id = subscription.subscription_id
-        AND subscription.customer_id = customer.customer_id
+        FROM orders, customer, "user", order_item
+        WHERE orders.customer_id = customer.customer_id
         AND customer.customer_id = "user".user_id
         AND order_item.order_id = orders.order_id
         GROUP BY orders.order_id, "user".company_name
@@ -68,14 +65,15 @@ const Orders = {
   },
 
   // Create new order from a purchase order
-  async create({ subscription_id, purchase_order_uuid, total }) {
+  async create({ customer_id, supplier_id, purchase_order_uuid, total }) {
     return db
       .query(
-        `INSERT INTO orders(subscription_id,
+        `INSERT INTO orders(customer_id,
+                            supplier_id,
                             purchase_order_uuid,
                             total)
-         VALUES ($1, $2, $3) RETURNING *`,
-        [subscription_id, purchase_order_uuid, total]
+         VALUES ($1, $2, $3, $4) RETURNING *`,
+        [customer_id, supplier_id, purchase_order_uuid, total]
       )
       .then(Result.one);
   },
@@ -85,7 +83,7 @@ const Orders = {
     return db
       .query(
           `SELECT *
-           FROM subscription_brand_orders
+           FROM orders_customer_supplier
           WHERE purchase_order_uuid = $1`,
         [purchase_order_uuid]
       )

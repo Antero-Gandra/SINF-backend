@@ -132,7 +132,7 @@ const storeInvoices = (invoices) => {
           if (remarks != null) {
             remarks = remarks.substring(remarks.indexOf('ORD-') + 4);
 
-            let order_id = '123';
+            let order_id;
 
             let i = 0;
 

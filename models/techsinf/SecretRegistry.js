@@ -3,7 +3,7 @@ const Result = require("./result");
 
 const SecretRegistry = {
   // Get the registry for the given secret_key. Remember to check the returned brand.
-  async get(secret_key) {
+  async find(secret_key) {
     return db
       .query(
         `SELECT * FROM secret_registry

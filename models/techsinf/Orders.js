@@ -103,6 +103,7 @@ const Orders = {
 
   // Reject a purchase order
   async reject(order_id) {
+    console.log("rejecting");
     return db
       .query(
         `UPDATE orders

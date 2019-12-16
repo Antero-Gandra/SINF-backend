@@ -19,6 +19,7 @@ const syncRouter = require("./routes/sync");
 const generateRouter = require("./routes/generate");
 const subscriptionRouter = require("./routes/subscriptions");
 const brandsRouter = require("./routes/brand");
+const orderRouter = require("./routes/order");
 
 
 // setup endpoints and fetch access_token
@@ -63,6 +64,7 @@ app.use("/sync", syncRouter);
 app.use("/subscriptions", subscriptionRouter);
 app.use("/user", userRouter);
 app.use("/brands", brandsRouter);
+app.use("/orders", orderRouter);
 
 app.use(function(err, req, res, next) {
   res.send(err);

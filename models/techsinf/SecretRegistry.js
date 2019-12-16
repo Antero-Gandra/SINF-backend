@@ -13,8 +13,21 @@ const SecretRegistry = {
       .then(Result.one);
   },
 
+  // Get last added key
+  async getLast(brand_id) {
+    return db
+      .query(
+        `SELECT * FROM secret_registry
+         WHERE brand_id = $1
+         ORDER BY secret_createdat DESC`,
+        [brand_id]
+      )
+      .then(Result.one)
+      .catch(error => console.log(error))
+  },
+
   // Generate a new secret key for the given brand.
-  async generate({ brand_id }) {
+  async generate(brand_id) {
     return db
       .query(
         `INSERT INTO secret_registry(brand_id)

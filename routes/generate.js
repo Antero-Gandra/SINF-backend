@@ -7,6 +7,7 @@ const {
   Invoice,
   Orders,
   Order_Item,
+  SecretRegistry
 } = require("../models/techsinf");
 
 router.post("/salesOrder", function(req, res, next) {
@@ -120,6 +121,18 @@ router.post("/purchaseInvoice", function(req, res, next) {
         })
     })
     .catch(error => console.log(error))
+});
+
+router.post("/key", async function(req, res, next) {
+
+  let brand_id = req.body.brandId;
+
+  await SecretRegistry.generate(brand_id)
+  .catch(error => res.send(error))
+
+  await SecretRegistry.getLast(brand_id)
+  .then(response => res.send(response))
+  .catch(error => res.send(error))
 });
 
 module.exports = router;

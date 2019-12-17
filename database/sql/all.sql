@@ -3,6 +3,7 @@
 \ir triggers.sql
 INSERT INTO customer_user(customer_tenant, customer_organization, customer_company_uuid, customer_company_name) VALUES ('224977', '224977-0001', '32652d3e-a1ad-4097-8dd6-b78f7503af6d', 'EMPY');
 INSERT INTO supplier_user (supplier_tenant, supplier_organization, supplier_company_uuid, supplier_company_name) VALUES ('227019','227019-0001', '5210709b-9cd7-4d65-960b-c35279faab33', 'EMPBY');
+INSERT INTO customer_user(customer_tenant, customer_organization, customer_company_uuid, customer_company_name) VALUES ('45254424', '45254424', '32652d3e-a1ad-4097-8dd6-b78f750asdcz', 'EMPRESA');
 INSERT INTO brand(supplier_id, brand_uuid, brand_name) VALUES ('2', 'b65c2b831b0a47d2b165c91a3c1db534', 'MARCA1');
 INSERT INTO brand(supplier_id, brand_uuid, brand_name) VALUES ('2', 'abe05198abdd4d92800b116ebfc67d73', 'MARCA2');
 INSERT INTO brand(supplier_id, brand_uuid, brand_name) VALUES ('2', '8b998a491a464bb6b70ec63bbe541d73', 'MARCA3');

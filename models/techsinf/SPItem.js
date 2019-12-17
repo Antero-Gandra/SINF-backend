@@ -13,6 +13,16 @@ const SPItem = {
       .then(Result.one);
   },
 
+  async create({ subscription_id, supplier_item, customer_item }) {
+    return db
+      .query(
+        `INSERT INTO sp_item (subscription_id, supplier_item, customer_item) 
+        VALUES ($1, $2, $3)`,
+        [subscription_id, supplier_item, customer_item]
+      )
+      .then(Result.one);
+  },
+
   // Find all sales items from the given supplier
   async supplierItems(supplier_id) {
     return db

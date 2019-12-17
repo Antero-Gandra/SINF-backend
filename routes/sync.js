@@ -9,7 +9,8 @@ const {
   Invoice,
   Orders,
   Order_Item,
-  SPItem
+  SPItem,
+  Subscription
 } = require("../models/techsinf");
 
 router.get("/customer", async function(req, res, next) {
@@ -17,8 +18,8 @@ router.get("/customer", async function(req, res, next) {
     .get(`/${req.query.tenant}/${req.query.organization}/purchases/orders`)
     .then(response => storeOrders(req.query.tenant, req.query.organization, response.data, res))
     .catch(error => res.send(error))
-    
-    await getAllOrdersCustomer(res);
+
+  await getAllOrdersCustomer(res);
 
   /*api
     .get(`/${tenant}/${organization}/purchasesCore/purchasesItems`)
@@ -170,7 +171,10 @@ const storeBrands = (brands) => {
     let brand_uuid = brands[id].id.replace(/-/g, "");
     let brand_name = brands[id].brandKey;
 
-    Brand.find(brand_uuid)
+    Brand.findSupplierName({
+        supplier_id,
+        brand_name
+      })
       .then(response => {
         if (response === null) {
           Brand.create({
@@ -178,10 +182,41 @@ const storeBrands = (brands) => {
               brand_uuid: brand_uuid,
               brand_name
             })
-            .then(response)
-            .catch(error => {
-              console.log(error);
-            });
+            .then(response =>
+              Brand.findSupplierName({
+                supplier_id,
+                brand_name
+              })
+              .then(response => {
+                let brand_id = response.brand_id
+                console.log(brand_id)
+                let customer_id = '3';
+
+                Subscription.create({
+                    brand_id,
+                    customer_id
+                  })
+                  .then(response => {
+                    Subscription.find({brand_id, customer_id})
+                      .then(response => {
+                        let subscription_id = response.subscription_id;
+                        let supplier_item = 'ITEMS' + subscription_id;
+                        let customer_item = 'ITEMC' + subscription_id;
+
+                        SPItem.create({
+                          subscription_id,
+                          supplier_item,
+                          customer_item
+                        })
+                        .catch(error => console.log(error));
+
+                      })
+                      .catch(error => console.log(error));
+                  })
+                  .catch(error => console.log(error));
+              })
+            )
+            .catch(error => console.log(error));
         }
       })
       .catch(error => {

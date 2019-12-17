@@ -24,6 +24,16 @@ const Brand = {
       .then(Result.one);
   },
 
+  async findSupplierName( {supplier_id, brand_name}) {
+    return db
+      .query(
+        `SELECT * FROM supplier_brand
+         WHERE supplier_id = $1 AND brand_name = $2`,
+        [supplier_id, brand_name]
+      )
+      .then(Result.one);
+  },
+
   // Find all brands from the given supplier.
   async allSupplier(supplier_id) {
     return db

@@ -44,6 +44,7 @@ router.post("/salesOrder", async function(req, res, next) {
             documentLines.push({
               "salesItem": item.supplier_item,
               "quantity": item.quantity,
+              "itemTaxSchema": 'ISENTO',
               "unitPrice": {
                 "amount": item.unit_price,
               }

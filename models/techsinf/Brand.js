@@ -24,7 +24,10 @@ const Brand = {
       .then(Result.one);
   },
 
-  async findSupplierName( {supplier_id, brand_name}) {
+  async findSupplierName({
+    supplier_id,
+    brand_name
+  }) {
     return db
       .query(
         `SELECT * FROM supplier_brand
@@ -35,23 +38,26 @@ const Brand = {
   },
 
   // Find all brands from the given supplier.
+  // select brand_id, brand_name, (select count(*) as n_subscriptions from subscription where subscription.brand_id = brand.brand_id),(select count(*) as n_products from sales_item where sales_item.brand_id = brand.brand_id)  from brand where supplier_id='4';
   async allSupplier(supplier_id) {
     return db
       .query(
-        `SELECT supplier_brand.brand_id, supplier_brand.brand_name, COUNT(*) 
-         FROM supplier_brand, subscription, sp_item 
-         WHERE supplier_id = $1 
-         AND supplier_brand.brand_id = subscription.brand_id 
-         AND subscription.subscription_id = sp_item.subscription_id 
-         GROUP BY supplier_brand.brand_id, supplier_brand.brand_name;
-        `,
+        `SELECT brand_id, brand_name, 
+        (SELECT count(*) as n_subscriptions FROM subscription WHERE subscription.brand_id = brand.brand_id),
+        (SELECT count(*) as n_products FROM sales_item WHERE sales_item.brand_id = brand.brand_id)  
+        FROM brand 
+        WHERE supplier_id=$1`,
         [supplier_id]
       )
       .then(Result.many);
   },
 
   // Create a new brand for the given supplier and brand UUID.
-  async create({ supplier_id, brand_uuid, brand_name }) {
+  async create({
+    supplier_id,
+    brand_uuid,
+    brand_name
+  }) {
     return db
       .query(
         `INSERT INTO brand(supplier_id,

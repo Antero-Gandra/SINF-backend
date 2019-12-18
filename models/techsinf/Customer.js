@@ -20,7 +20,6 @@ const Customer = {
 
   // Find customer with the given tenant and organization identifiers.
   async find({ tenant, organization, company_name }) {
-    console.log(company_name);
     return db
       .query(
         `SELECT * FROM customer_user

@@ -81,7 +81,7 @@ CREATE TABLE brand(
 CREATE TABLE sales_item(
   sales_item_id             SERIAL PRIMARY KEY,
   brand_id                  INTEGER NOT NULL,
-  sales_item_uuid           UUID NOT NULL, -- PRIMAVERA SUPPLIER (PRIVATE)
+  sales_item_uuid           UUID NOT NULL DEFAULT uuid_generate_v4(),
   sales_item_createdat      PAST_TIMESTAMP,
 
   CONSTRAINT SalesItemUniqueInstance UNIQUE(sales_item_uuid),

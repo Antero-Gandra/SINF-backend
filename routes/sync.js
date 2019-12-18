@@ -75,6 +75,7 @@ const storeOrders = (tenant, organization, orders, res) => {
                           quantity,
                           unit_price
                         })
+                        .catch(error => console.log(error))
                       })
                       .catch(error => {
                         res.send(error);
@@ -182,40 +183,6 @@ const storeBrands = (brands) => {
               brand_uuid: brand_uuid,
               brand_name
             })
-            .then(response =>
-              Brand.findSupplierName({
-                supplier_id,
-                brand_name
-              })
-              .then(response => {
-                let brand_id = response.brand_id
-                console.log(brand_id)
-                let customer_id = '3';
-
-                Subscription.create({
-                    brand_id,
-                    customer_id
-                  })
-                  .then(response => {
-                    Subscription.find({brand_id, customer_id})
-                      .then(response => {
-                        let subscription_id = response.subscription_id;
-                        let supplier_item = 'ITEMS' + subscription_id;
-                        let customer_item = 'ITEMC' + subscription_id;
-
-                        SPItem.create({
-                          subscription_id,
-                          supplier_item,
-                          customer_item
-                        })
-                        .catch(error => console.log(error));
-
-                      })
-                      .catch(error => console.log(error));
-                  })
-                  .catch(error => console.log(error));
-              })
-            )
             .catch(error => console.log(error));
         }
       })

@@ -56,15 +56,17 @@ const Brand = {
   async create({
     supplier_id,
     brand_uuid,
-    brand_name
+    brand_name,
+    brand_createdat
   }) {
     return db
       .query(
         `INSERT INTO brand(supplier_id,
                            brand_uuid,
-                           brand_name)
-         VALUES ($1, $2, $3) RETURNING *`,
-        [supplier_id, brand_uuid, brand_name]
+                           brand_name,
+                           brand_createdat)
+         VALUES ($1, $2, $3, $4) RETURNING *`,
+        [supplier_id, brand_uuid, brand_name, brand_createdat]
       )
       .then(Result.one);
   },

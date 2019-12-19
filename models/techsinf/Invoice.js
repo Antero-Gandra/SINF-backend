@@ -3,13 +3,14 @@ const Result = require("./result");
 
 const Invoice = {
   // Create new sales invoice
-  async create({ order_id, sales_invoice_uuid }) {
+  async create({ order_id, sales_invoice_uuid, invoice_createdat }) {
     return db
       .query(
         `INSERT INTO invoice(order_id,
-                            sales_invoice_uuid)
-         VALUES ($1, $2) RETURNING *`,
-        [order_id, sales_invoice_uuid]
+                            sales_invoice_uuid,
+                            invoice_createdat)
+         VALUES ($1, $2, $3) RETURNING *`,
+        [order_id, sales_invoice_uuid, invoice_createdat]
       )
       .then(Result.one);
   },

@@ -6,7 +6,7 @@ const Orders = {
   async get(order_id) {
     return db
       .query(
-        `SELECT * FROM subscription_brand_orders
+        `SELECT * FROM orders_customer_supplier
          WHERE order_id = $1`,
         [order_id]
       )
@@ -17,7 +17,7 @@ const Orders = {
   async allSupplier(supplier_id) {
     return db
       .query(
-        `SELECT * FROM subscription_brand_orders
+        `SELECT * FROM orders_customer_supplier
          WHERE supplier_id = $1`,
         [supplier_id]
       )
@@ -28,7 +28,7 @@ const Orders = {
   async allCustomer(customer_id) {
     return db
       .query(
-        `SELECT * FROM subscription_brand_orders
+        `SELECT * FROM orders_customer_supplier
          WHERE customer_id = $1`,
         [customer_id]
       )
@@ -65,15 +65,16 @@ const Orders = {
   },
 
   // Create new order from a purchase order
-  async create({ customer_id, supplier_id, purchase_order_uuid, total }) {
+  async create({ customer_id, supplier_id, purchase_order_uuid, total, order_createdat }) {
     return db
       .query(
         `INSERT INTO orders(customer_id,
                             supplier_id,
                             purchase_order_uuid,
-                            total)
-         VALUES ($1, $2, $3, $4) RETURNING *`,
-        [customer_id, supplier_id, purchase_order_uuid, total]
+                            total,
+                            order_createdat)
+         VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+        [customer_id, supplier_id, purchase_order_uuid, total, order_createdat]
       )
       .then(Result.one);
   },

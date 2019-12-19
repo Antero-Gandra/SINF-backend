@@ -29,12 +29,14 @@ router.get("/customer", async function(req, res, next) {
 
 const storeOrders = (tenant, organization, orders, res) => {
   for (let id in orders) {
-    let purchase_order_uuid = orders[id].id.replace(/-/g, "");
-    let company_name = orders[id].company;
-    let total = orders[id].grossValue.amount;
 
     if (orders[id].isDeleted != false || orders[id].serie != "2019")
       continue;
+
+    let purchase_order_uuid = orders[id].id.replace(/-/g, "");
+    let company_name = orders[id].company;
+    let total = orders[id].grossValue.amount;
+    let order_createdat = orders[id].createdOn;
 
     Orders.findByPurchaseUUID(purchase_order_uuid)
       .then(response => {
@@ -54,7 +56,8 @@ const storeOrders = (tenant, organization, orders, res) => {
                   customer_id,
                   supplier_id,
                   purchase_order_uuid: purchase_order_uuid,
-                  total
+                  total,
+                  order_createdat
                 })
                 .then(response => {
                   let order_id = response.order_id;
@@ -70,12 +73,12 @@ const storeOrders = (tenant, organization, orders, res) => {
                         let sp_item_id = response.sp_item_id;
 
                         Order_Item.create({
-                          order_id,
-                          sp_item_id,
-                          quantity,
-                          unit_price
-                        })
-                        .catch(error => console.log(error))
+                            order_id,
+                            sp_item_id,
+                            quantity,
+                            unit_price
+                          })
+                          .catch(error => console.log(error))
                       })
                       .catch(error => {
                         res.send(error);
@@ -126,7 +129,10 @@ router.get("/supplier", function(req, res, next) {
 
 const storeInvoices = (invoices) => {
   for (let id in invoices) {
+
     let sales_invoice_uuid = invoices[id].id.replace(/-/g, "");
+    let invoice_createdat = invoices[id].createdOn;
+
     Invoice.find(sales_invoice_uuid)
       .then(response => {
         if (response === null) {
@@ -148,15 +154,26 @@ const storeInvoices = (invoices) => {
 
             order_id = remarks.substring(0, i - 1);
 
-            Invoice.create({
-                order_id,
-                sales_invoice_uuid: sales_invoice_uuid
+            Orders.get(order_id)
+              .then(response => {
+                if (response != null) {
+                  Invoice.create({
+                      order_id,
+                      sales_invoice_uuid: sales_invoice_uuid,
+                      invoice_createdat
+                    })
+                    .catch(error => {
+                      console.log(error);
+                    });
+
+                  Orders.receiveSalesInvoice(order_id)
+                }
               })
               .catch(error => {
                 console.log(error);
-              });
+              })
 
-            Orders.receiveSalesInvoice(order_id);
+
           }
         }
       })
@@ -171,17 +188,20 @@ const storeBrands = (brands) => {
   for (let id in brands) {
     let brand_uuid = brands[id].id.replace(/-/g, "");
     let brand_name = brands[id].brandKey;
+    let brand_createdat = brands[id].createdOn
 
     Brand.findSupplierName({
         supplier_id,
-        brand_name
+        brand_name,
+        brand_createdat
       })
       .then(response => {
         if (response === null) {
           Brand.create({
               supplier_id,
               brand_uuid: brand_uuid,
-              brand_name
+              brand_name,
+              brand_createdat
             })
             .catch(error => console.log(error));
         }

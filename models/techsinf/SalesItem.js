@@ -13,6 +13,16 @@ const SalesItem = {
       .then(Result.one);
   },
 
+  async find({ brand_id, sales_item_name}) {
+    return db
+      .query(
+        `SELECT * FROM sales_item 
+         WHERE brand_id=$1 AND sales_item_name=$2`,
+        [brand_id, sales_item_name]
+      )
+      .then(Result.one);
+  },
+
   // Get all sales item of a brand
   async allBrand(brand_id) {
     return db
@@ -25,7 +35,7 @@ const SalesItem = {
   },
 
   // Create a new sales item
-  async create({ brand_id, sales_item_uuid }) {
+  async create({ brand_id, sales_item_name, sales_item_uuid }) {
     return db
       .query(
         `INSERT INTO sales_item(brand_id,

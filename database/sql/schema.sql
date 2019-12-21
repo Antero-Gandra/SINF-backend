@@ -4,7 +4,7 @@
 
 DROP SCHEMA IF EXISTS public CASCADE;
 CREATE SCHEMA public;
-ALTER SCHEMA public OWNER TO techsinf;
+ALTER SCHEMA public OWNER TO ricardo;
 COMMENT ON SCHEMA public IS 'standard public schema';
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -80,8 +80,9 @@ CREATE TABLE brand(
 -- All registered sales items.
 CREATE TABLE sales_item(
   sales_item_id             SERIAL PRIMARY KEY,
-  brand_id                  INTEGER NOT NULL,
+  sales_item_name           VARCHAR(40) NOT NULL,
   sales_item_uuid           UUID NOT NULL DEFAULT uuid_generate_v4(),
+  brand_id                  INTEGER NOT NULL,
   sales_item_createdat      PAST_TIMESTAMP,
 
   CONSTRAINT SalesItemUniqueInstance UNIQUE(sales_item_uuid),
@@ -120,14 +121,17 @@ CREATE TABLE secret_registry(
 CREATE TABLE sp_item(
   sp_item_id                SERIAL PRIMARY KEY,
   subscription_id           INTEGER NOT NULL,
-  supplier_item             VARCHAR(40) NOT NULL, -- PRIMAVERA SUPPLIER (PRIVATE)
+  sales_item_id             INTEGER NOT NULL, -- PRIMAVERA SUPPLIER (PRIVATE)
   customer_item             VARCHAR(40) NOT NULL, -- PRIMAVERA CUSTOMER (PRIVATE)
   sp_item_createdat         PAST_TIMESTAMP,
 
   CONSTRAINT SPItemNaturalKey UNIQUE(customer_item),
 
   FOREIGN KEY(subscription_id) REFERENCES
-    subscription(subscription_id) ON DELETE CASCADE
+    subscription(subscription_id) ON DELETE CASCADE,
+
+  FOREIGN KEY(sales_item_id) REFERENCES
+    sales_item(sales_item_id) ON DELETE CASCADE
 );
 
 -- ***** MASTER DATA ENDS HERE

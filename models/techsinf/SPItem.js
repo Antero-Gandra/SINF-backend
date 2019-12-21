@@ -13,12 +13,12 @@ const SPItem = {
       .then(Result.one);
   },
 
-  async create({ subscription_id, supplier_item, customer_item }) {
+  async create({ subscription_id, sales_item_id, customer_item }) {
     return db
       .query(
-        `INSERT INTO sp_item (subscription_id, supplier_item, customer_item) 
+        `INSERT INTO sp_item (subscription_id, sales_item_id, customer_item) 
         VALUES ($1, $2, $3)`,
-        [subscription_id, supplier_item, customer_item]
+        [subscription_id, sales_item_id, customer_item]
       )
       .then(Result.one);
   },

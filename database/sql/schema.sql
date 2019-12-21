@@ -4,7 +4,7 @@
 
 DROP SCHEMA IF EXISTS public CASCADE;
 CREATE SCHEMA public;
-ALTER SCHEMA public OWNER TO ricardo;
+ALTER SCHEMA public OWNER TO techsinf;
 COMMENT ON SCHEMA public IS 'standard public schema';
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";

@@ -15,17 +15,21 @@ const SalesItem = require("../models/techsinf/SalesItem");
  */
 const syncKnownBrand = async (supplier, jasminBrand, dbBrand) => {
   const brand_id = dbBrand.brand_id;
+  const brand_name = jasminBrand.brandKey;
 
   const [jasminItems, dbItems] = await Promise.all([
-    APISalesItem(supplier).odata({ $filter: `BrandId eq ${jasminBrand.id}` }),
-    SalesItem.allBrand(dbBrand.brand_id).then(SalesItem.mapSalesItemUUID)
+    APISalesItem(supplier).odata({ $filter: `Brand eq '${brand_name}'` }),
+    SalesItem.allBrand(brand_id).then(SalesItem.mapSalesItemUUID)
   ]);
 
-  const promises = jasminItems.map(jasminItem => {
-    const sales_item_uuid = jasminItem.id;
-    if (sales_item_uuid in dbItems) continue;
-    return SalesItem.create({ brand_id, sales_item_uuid });
-  });
+  const promises = jasminItems
+    .map(jasminItem => {
+      const sales_item_uuid = jasminItem.id;
+      const sales_item_name = jasminItem.itemKey;
+      if (sales_item_uuid in dbItems) return null;
+      return SalesItem.create({ brand_id, sales_item_uuid, sales_item_name });
+    })
+    .filter(value => value !== null);
 
   return await Promise.all(promises);
 };
@@ -39,10 +43,10 @@ const syncKnownBrand = async (supplier, jasminBrand, dbBrand) => {
 const syncUnknownBrand = async (supplier, jasminBrand) => {
   const supplier_id = supplier.user_id;
   const brand_uuid = jasminBrand.id;
-  const brand_name = jasminBrand.name;
+  const brand_name = jasminBrand.brandKey;
 
   const [jasminItems, dbBrand] = await Promise.all([
-    APISalesItem(supplier).odata({ $filter: `BrandId eq ${jasminBrand.id}` }),
+    APISalesItem(supplier).odata({ $filter: `Brand eq '${brand_name}'` }),
     Brand.create({ supplier_id, brand_uuid, brand_name })
   ]);
 
@@ -50,20 +54,35 @@ const syncUnknownBrand = async (supplier, jasminBrand) => {
 
   const promises = jasminItems.map(jasminItem => {
     const sales_item_uuid = jasminItem.id;
-    return SalesItem.create({ brand_id, sales_item_uuid });
+    const sales_item_name = jasminItem.itemKey;
+    return SalesItem.create({ brand_id, sales_item_uuid, sales_item_name });
   });
 
   return await Promise.all(promises);
 };
 
+/**
+ * @typedef {Object} Supplier
+ * @property {number} user_id
+ * @property {string}  tenant
+ * @property {string}  organization
+ * @property {string}  company_uuid
+ */
+
 const SyncService = {
-  // Sync brands of this supplier
-  // supplier: {user_id, tenant, organization, company_uuid}
+  /**
+   * Sync brands of this supplier
+   * @param {Supplier} supplier
+   * @returns {Promise<Brand[]>}
+   */
   async brands(supplier) {
     const [jasminBrands, dbBrands] = await Promise.all([
       APIBrand(supplier).all(),
       Brand.allSupplier(supplier.user_id).then(Brand.makeMapBrandUUID)
     ]);
+
+    console.log("JASMIN_BRANDS: %o", jasminBrands);
+    console.log("DB_BRANDS: %o", dbBrands);
 
     const known = [];
     const unknown = [];
@@ -73,9 +92,11 @@ const SyncService = {
       // We have already seen this jasminBrand
       if (brand_uuid in dbBrands) {
         const dbBrand = dbBrands[brand_uuid];
+        console.log("KNOWN BRAND: ", brand_uuid);
         const promise = syncKnownBrand(supplier, jasminBrand, dbBrand);
         known.push(promise);
       } else {
+        console.log("UNKNOWN BRAND: ", brand_uuid);
         const promise = syncUnknownBrand(supplier, jasminBrand);
         unknown.push(promise);
       }

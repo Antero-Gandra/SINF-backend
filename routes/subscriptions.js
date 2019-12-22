@@ -110,7 +110,7 @@ router.post("/create", function(req, res, next) {
 
                     SalesItem.allBrand(brand_id)
                       .then(response => {
-                        for (id in response) {
+                        for (const id in response) {
                           let sales_item_name = response[id].sales_item_name;
                           let description = `Item "${sales_item_name}" of Empresa BY`;
                           let customer_item = makeid(10);

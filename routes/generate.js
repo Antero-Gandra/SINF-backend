@@ -38,7 +38,7 @@ router.post("/salesOrder", async function(req, res, next) {
 
       Order_Item.findOrderItems(order_id)
         .then(response => {
-          for (id in response) {
+          for (const id in response) {
             let item = response[id];
 
             documentLines.push({
@@ -102,7 +102,7 @@ router.post("/purchaseInvoice", async function(req, res, next) {
 
       Order_Item.findOrderItems(order_id)
         .then(response => {
-          for (id in response) {
+          for (const id in response) {
             let item = response[id];
 
             documentLines.push({

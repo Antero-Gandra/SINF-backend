@@ -27,9 +27,9 @@ const {
     SPItem
 } = require("../models/techsinf");
 
-// test on A
-const tenant = process.env.A_TENANT;
-const organization = process.env.A_ORGANIZATION;
+// test on B
+const tenant = process.env.B_TENANT;
+const organization = process.env.B_ORGANIZATION;
 
 const router = express.Router();
 

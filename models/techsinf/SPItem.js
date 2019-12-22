@@ -16,7 +16,7 @@ const SPItem = {
   async create({ subscription_id, sales_item_id, customer_item }) {
     return db
       .query(
-        `INSERT INTO sp_item (subscription_id, sales_item_id, customer_item) 
+        `INSERT INTO sp_item (subscription_id, sales_item_id, customer_item)
         VALUES ($1, $2, $3)`,
         [subscription_id, sales_item_id, customer_item]
       )
@@ -91,17 +91,8 @@ const SPItem = {
       .then(makeMapSalesItems);
   },
 
-  makeMapPurchaseItems(rows) {
-    const map = {};
-    for (const row in rows) map[row.purchase_item_uuid] = row;
-    return map;
-  },
-
-  makeMapSalesItems(rows) {
-    const map = {};
-    for (const row in rows) map[row.sales_item_uuid] = row;
-    return map;
-  }
+  makeMapPurchaseItems: Result.keyfy("purchase_item_uuid"),
+  makeMapSalesItems: Result.keyfy("sales_item_uuid")
 };
 
 Object.freeze(SPItem);

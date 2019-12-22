@@ -24,10 +24,7 @@ const Brand = {
       .then(Result.one);
   },
 
-  async findSupplierName({
-    supplier_id,
-    brand_name
-  }) {
+  async findSupplierName({ supplier_id, brand_name }) {
     return db
       .query(
         `SELECT * FROM supplier_brand
@@ -38,14 +35,19 @@ const Brand = {
   },
 
   // Find all brands from the given supplier.
-  // select brand_id, brand_name, (select count(*) as n_subscriptions from subscription where subscription.brand_id = brand.brand_id),(select count(*) as n_products from sales_item where sales_item.brand_id = brand.brand_id)  from brand where supplier_id='4';
   async allSupplier(supplier_id) {
     return db
       .query(
-        `SELECT brand_id, brand_name, 
-        (SELECT count(*) as n_subscriptions FROM subscription WHERE subscription.brand_id = brand.brand_id),
-        (SELECT count(*) as n_products FROM sales_item WHERE sales_item.brand_id = brand.brand_id)  
-        FROM brand 
+        `SELECT *,
+        CAST((SELECT count(*) as n_subscriptions
+              FROM subscription
+              WHERE subscription.brand_id = brand.brand_id)
+        AS int),
+        CAST((SELECT count(*) as n_products
+              FROM sales_item
+              WHERE sales_item.brand_id = brand.brand_id)
+        AS int)
+        FROM brand
         WHERE supplier_id=$1`,
         [supplier_id]
       )
@@ -53,20 +55,14 @@ const Brand = {
   },
 
   // Create a new brand for the given supplier and brand UUID.
-  async create({
-    supplier_id,
-    brand_uuid,
-    brand_name,
-    brand_createdat
-  }) {
+  async create({ supplier_id, brand_uuid, brand_name }) {
     return db
       .query(
         `INSERT INTO brand(supplier_id,
                            brand_uuid,
-                           brand_name,
-                           brand_createdat)
-         VALUES ($1, $2, $3, $4) RETURNING *`,
-        [supplier_id, brand_uuid, brand_name, brand_createdat]
+                           brand_name)
+         VALUES ($1, $2, $3) RETURNING *`,
+        [supplier_id, brand_uuid, brand_name]
       )
       .then(Result.one);
   },
@@ -82,11 +78,7 @@ const Brand = {
       .then(Result.count);
   },
 
-  makeMapBrandUUID(rows) {
-    const map = {};
-    for (const row in rows) map[row.brand_uuid] = row;
-    return map;
-  }
+  makeMapBrandUUID: Result.keyfy("brand_uuid")
 };
 
 Object.freeze(Brand);

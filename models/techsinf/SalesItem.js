@@ -13,10 +13,10 @@ const SalesItem = {
       .then(Result.one);
   },
 
-  async find({ brand_id, sales_item_name}) {
+  async find({ brand_id, sales_item_name }) {
     return db
       .query(
-        `SELECT * FROM sales_item 
+        `SELECT * FROM sales_item
          WHERE brand_id=$1 AND sales_item_name=$2`,
         [brand_id, sales_item_name]
       )
@@ -39,9 +39,10 @@ const SalesItem = {
     return db
       .query(
         `INSERT INTO sales_item(brand_id,
-                                sales_item_uuid)
-         VALUES ($1, $2) RETURNING *`,
-        [brand_id, sales_item_uuid]
+                                sales_item_uuid,
+                                sales_item_name)
+         VALUES ($1, $2, $3) RETURNING *`,
+        [brand_id, sales_item_uuid, sales_item_name]
       )
       .then(Result.one);
   },
@@ -57,7 +58,7 @@ const SalesItem = {
       .then(Result.count);
   },
 
-  mapSalesItemUUID: Result.map("sales_item_uuid")
+  mapSalesItemUUID: Result.keyfy("sales_item_uuid")
 };
 
 Object.freeze(SalesItem);

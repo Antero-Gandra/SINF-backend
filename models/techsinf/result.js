@@ -16,15 +16,16 @@ const Result = {
 
   // Filter columns from the output
   filter: key => ({ rows, rowCount, ...rest }) => {
-    if (typeof key === "string") for (row of rows) delete row[key];
-    if (Array.isArray(key)) for (row of rows) for (k in key) delete row[k];
+    if (typeof key === "string") for (const row of rows) delete row[key];
+    if (Array.isArray(key))
+      for (const row of rows) for (const k of key) delete row[k];
     return { rows, rowCount, ...rest };
   },
 
   // Map using a given column
-  map: key => ({ rows }) => {
+  keyfy: key => rows => {
     const map = {};
-    for (const row in rows) {
+    for (const row of rows) {
       if (row[key] in map) throw `Map repeated key: ${row[key]}`;
       map[row[key]] = row;
     }

@@ -64,6 +64,11 @@ FROM sales_item SI
 NATURAL JOIN brand B
 NATURAL JOIN supplier_user SU;
 
+CREATE OR REPLACE VIEW brand_subscription AS
+SELECT *
+FROM brand B
+NATURAL JOIN subscription S;
+
 -- * SECRET REGISTRY
 
 -- brand JOIN secret_registry

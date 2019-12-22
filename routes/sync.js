@@ -7,21 +7,20 @@ const {
   Invoice,
   Orders,
   Order_Item,
-  SPItem,
-  Subscription
+  SPItem
 } = require("../models/techsinf");
 
 const router = express.Router();
 
 router.get("/customer", async function(req, res, next) {
+  const { tenant, organization } = req.query;
+
   await api
-    .get(`/${req.query.tenant}/${req.query.organization}/purchases/orders`)
-    .then(response =>
-      storeOrders(req.query.tenant, req.query.organization, response.data, res)
-    )
+    .get(`/${tenant}/${organization}/purchases/orders`)
+    .then(response => storeOrders(tenant, organization, response.data, res))
     .catch(error => res.send(error));
 
-  await getAllOrdersCustomer(res);
+  getAllOrdersCustomer(res);
 
   /*api
     .get(`/${tenant}/${organization}/purchasesCore/purchasesItems`)
@@ -59,7 +58,7 @@ const storeOrders = (tenant, organization, orders, res) => {
               .then(response => {
                 let order_id = response.order_id;
 
-                for (id2 in orders[id].documentLines) {
+                for (const id2 in orders[id].documentLines) {
                   let item = orders[id].documentLines[id2];
 
                   let quantity = item.quantity;

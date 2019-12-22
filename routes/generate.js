@@ -140,16 +140,12 @@ router.post("/purchaseInvoice", async function(req, res, next) {
     })
 });
 
-router.post("/key", async function(req, res, next) {
+router.post("/key", function(req, res, next) {
+  const brand_id = req.body.brandId;
 
-  let brand_id = req.body.brandId;
-
-  await SecretRegistry.generate(brand_id)
-    .catch(error => res.send(error))
-
-  await SecretRegistry.getLast(brand_id)
-    .then(response => res.send(response))
-    .catch(error => res.send(error))
+  SecretRegistry.generate(brand_id)
+  .then(response => res.send(response))
+    .catch(error => res.send(error));
 });
 
 module.exports = router;

@@ -64,9 +64,9 @@ const syncUnknownBrand = async (supplier, jasminBrand) => {
 /**
  * @typedef {Object} Supplier
  * @property {number} user_id
- * @property {string}  tenant
- * @property {string}  organization
- * @property {string}  company_uuid
+ * @property {string} tenant
+ * @property {string} organization
+ * @property {string} company_uuid
  */
 
 const SyncService = {
@@ -80,9 +80,6 @@ const SyncService = {
       APIBrand(supplier).all(),
       Brand.allSupplier(supplier.user_id).then(Brand.makeMapBrandUUID)
     ]);
-
-    console.log("JASMIN_BRANDS: %o", jasminBrands);
-    console.log("DB_BRANDS: %o", dbBrands);
 
     const known = [];
     const unknown = [];

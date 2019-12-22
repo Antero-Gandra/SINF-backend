@@ -1,6 +1,7 @@
 const {
   Country,
   Currency,
+  Brand,
   Item,
   Party,
   ItemTaxSchema,
@@ -20,6 +21,7 @@ const {
 const joiRouteMap = {
   "/corePatterns/countries/odata": Country,
   "/corePatterns/currencies/odata": Currency,
+  "/businessCore/brands/odata": Brand,
   "/businessCore/items/odata": Item,
   "/businessCore/parties/odata": Party,
   "/taxesCore/itemTaxSchemas/odata": ItemTaxSchema,
@@ -45,8 +47,8 @@ function validate(schema, response) {
   const items = "items" in data ? data.items : data;
   const errors = [];
   const num = { good: 0, bad: 0 };
-  for (key in items) {
-    const { error } = schema.validate(items[key]);
+  for (const item of items) {
+    const { error } = schema.validate(item);
     if (error) {
       errors.push(error.details[0]);
       ++num.bad;

@@ -87,8 +87,7 @@ const common = ({ url, schema }) => {
       return api
         .get(url)
         .then(response => response.data)
-        .then(expect.many("ALL"))
-        .catch(log);
+        .then(expect.many("ALL"));
     },
 
     /**
@@ -99,8 +98,7 @@ const common = ({ url, schema }) => {
       return api
         .get(`${url}/odata`, { params })
         .then(response => response.data.items)
-        .then(expect.many(`ODATA ${qs.stringify(params)}`))
-        .catch(log);
+        .then(expect.many(`ODATA ${qs.stringify(params)}`));
     },
 
     /**
@@ -108,7 +106,7 @@ const common = ({ url, schema }) => {
      * @returns Promise<UUID>
      */
     async create(data) {
-      return api.post(url, data).catch(log);
+      return api.post(url, data);
     },
 
     /**
@@ -120,8 +118,7 @@ const common = ({ url, schema }) => {
     async update(id, field, data) {
       return api
         .put(`${url}/${id}/${field}`, data)
-        .then(expect.empty(`UPDATE ${id}/${field}`))
-        .catch(log);
+        .then(expect.empty(`UPDATE ${id}/${field}`));
     },
 
     /**
@@ -129,10 +126,7 @@ const common = ({ url, schema }) => {
      * @returns Promise<void>
      */
     async delete(id) {
-      return api
-        .delete(`${url}/${id}`)
-        .then(expect.empty(`DELETE ${id}`))
-        .catch(log);
+      return api.delete(`${url}/${id}`).then(expect.empty(`DELETE ${id}`));
     }
   };
 };

@@ -21,7 +21,6 @@ const subscriptionRouter = require("./routes/subscriptions");
 const brandsRouter = require("./routes/brand");
 const orderRouter = require("./routes/order");
 
-
 // setup endpoints and fetch access_token
 require("./utils/token");
 
@@ -45,6 +44,8 @@ const sessionOptions = {
 // setup html template engine + console logging for development
 app.set("view engine", "pug");
 app.use(morgan("dev"));
+
+app.disable("etag");
 
 // builtin middleware
 app.use(express.json());

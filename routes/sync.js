@@ -1,25 +1,24 @@
 const express = require("express");
 const { api } = require("../utils/endpoints");
 const SyncService = require("../services/SyncService");
-const {
-  Brand,
-  Customer,
-  Invoice,
-  Orders,
-  Order_Item,
-  SPItem
-} = require("../models/techsinf");
+const { Brand, Invoice, Orders } = require("../models/techsinf");
+const APIPurchaseOrder = require("../models/primavera/PurchaseOrder");
 
 const router = express.Router();
 
+const CUSTOMER_ID = 1,
+  SUPPLIER_ID = 2;
+
 router.get("/customer", async function(req, res, next) {
-  const { tenant, organization } = req.query;
+  const customer = {
+    user_id: 1,
+    tenant: req.query.tenant,
+    organization: req.query.organization,
+    company_uuid: "32652d3e-a1ad-4097-8dd6-b78f7503af6d"
+  };
 
-  await api
-    .get(`/${tenant}/${organization}/purchases/orders`)
-    .then(response => storeOrders(tenant, organization, response.data, res))
-    .catch(error => res.send(error));
-
+  const orders = await APIPurchaseOrder(customer).all();
+  storeOrders(customer, orders);
   getAllOrdersCustomer(res);
 
   /*api
@@ -28,76 +27,38 @@ router.get("/customer", async function(req, res, next) {
     .catch(error => res.send(error));*/
 });
 
-const storeOrders = (tenant, organization, orders, res) => {
-  for (let id in orders) {
-    if (orders[id].isDeleted != false || orders[id].serie != "2019") continue;
+const storeOrders = (customer, purchaseOrders) => {
+  const customer_id = customer.user_id;
 
-    let purchase_order_uuid = orders[id].id.replace(/-/g, "");
-    let company_name = orders[id].company;
-    let total = orders[id].grossValue.amount;
-    let order_createdat = orders[id].createdOn;
+  for (const po of purchaseOrders) {
+    if (po.isDeleted != false || po.serie != "2019") continue;
+
+    const purchase_order_uuid = po.id.replace(/-/g, "");
+    const total = po.grossValue.amount;
+    const order_createdat = po.createdOn;
 
     Orders.findByPurchaseUUID(purchase_order_uuid)
-      .then(response => {
-        if (response === null) {
-          Customer.find({
-            tenant,
-            organization,
-            company_name
-          }).then(response => {
-            let customer_id = response.customer_id;
-            let supplier_id = "2";
+      .then(order => {
+        if (order !== null) return;
+        const supplier_id = "2";
 
-            Orders.create({
-              customer_id,
-              supplier_id,
-              purchase_order_uuid: purchase_order_uuid,
-              total,
-              order_createdat
-            })
-              .then(response => {
-                let order_id = response.order_id;
-
-                for (const id2 in orders[id].documentLines) {
-                  let item = orders[id].documentLines[id2];
-
-                  let quantity = item.quantity;
-                  let unit_price = item.unitPrice.amount;
-
-                  SPItem.salesItem(item.purchasesItem)
-                    .then(response => {
-                      let sp_item_id = response.sp_item_id;
-
-                      Order_Item.create({
-                        order_id,
-                        sp_item_id,
-                        quantity,
-                        unit_price
-                      }).catch(error => console.log(error));
-                    })
-                    .catch(error => {
-                      res.send(error);
-                    });
-                }
-              })
-              .catch(error => {
-                console.log(error);
-                res.send(error);
-              });
-          });
-        }
+        Orders.create({
+          customer_id,
+          supplier_id,
+          purchase_order_uuid,
+          total,
+          order_createdat
+        });
       })
-      .catch(error => {
-        console.log(error);
-        res.send(error);
-      });
+      .catch(console.error);
   }
 };
 
 const getAllOrdersCustomer = res => {
-  Orders.allOrdersCustomer()
-    .then(response => {
-      res.send(response);
+  Orders.allCustomer(CUSTOMER_ID) // HC
+    .then(orders => {
+      console.log("ALL ORDERS", orders);
+      res.send(orders);
     })
     .catch(error => console.log(error));
 };
@@ -171,36 +132,8 @@ const storeInvoices = invoices => {
   }
 };
 
-const storeBrands = brands => {
-  let supplier_id = "2";
-  for (let id in brands) {
-    let brand_uuid = brands[id].id.replace(/-/g, "");
-    let brand_name = brands[id].brandKey;
-    let brand_createdat = brands[id].createdOn;
-
-    Brand.findSupplierName({
-      supplier_id,
-      brand_name,
-      brand_createdat
-    })
-      .then(response => {
-        if (response === null) {
-          Brand.create({
-            supplier_id,
-            brand_uuid: brand_uuid,
-            brand_name,
-            brand_createdat
-          }).catch(error => console.log(error));
-        }
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }
-};
-
 const getAllOrdersSupplier = res => {
-  Orders.allOrdersSupplier()
+  Orders.allSupplier(SUPPLIER_ID) // HC
     .then(response => {
       res.send(response);
     })
